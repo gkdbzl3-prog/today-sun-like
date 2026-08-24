@@ -1,250 +1,45 @@
-html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오늘만 해보자</title>
-  <!-- 이미지 저장을 위한 CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <style>
-    :root {
-      --bg: #FFFDF9;
-      --card-bg: #FFFFFF;
-      --sun-start: #FF9E44;
-      --sun-end: #FFD84D;
-      --cheese: #FFA938;
-      --text: #4A3828;
-      --text-muted: #A39688;
-      --border: #F3E3D0;
-      --done-line: #BDB0A4;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", Roboto, sans-serif; }
-    body { background-color: #F7EFE5; display: flex; justify-content: center; padding: 20px; color: var(--text); }
-
-    /* 공유 이미지 캡처 영역 */
-    #capture-area {
-      width: 100%;
-      max-width: 400px;
-      background: var(--bg);
-      border-radius: 24px;
-      padding: 24px 20px;
-      box-shadow: 0 8px 24px rgba(74, 56, 40, 0.08);
-      border: 2px solid var(--border);
-    }
-
-    /* 1행: 일출 헤더 */
-    .header {
-      text-align: center;
-      padding: 16px 0;
-      background: radial-gradient(circle at 50% 120%, var(--sun-end) 0%, var(--sun-start) 45%, transparent 70%);
-      border-radius: 18px;
-      margin-bottom: 16px;
-    }
-    .header-sun { font-size: 32px; line-height: 1; }
-    .header-title { font-size: 22px; font-weight: 800; color: #5C3200; margin-top: 4px; }
-
-    /* 2행: NPC 치즈 */
-    .npc-section { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-    .npc-avatar { font-size: 36px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-    .npc-bubble {
-      position: relative;
-      background: var(--card-bg);
-      border: 2px solid var(--cheese);
-      border-radius: 14px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      flex: 1;
-    }
-    .npc-bubble::before {
-      content: '';
-      position: absolute;
-      left: -8px; top: 50%; transform: translateY(-50%);
-      border-width: 6px 8px 6px 0;
-      border-style: solid;
-      border-color: transparent var(--cheese) transparent transparent;
-    }
-
-    /* 카드 박스 공통 */
-    .section-title { font-size: 15px; font-weight: bold; margin-bottom: 8px; color: var(--text); }
-    .card {
-      background: var(--card-bg);
-      border: 1.5px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    /* 3행: 할 일 목록 */
-    .todo-item { margin-bottom: 10px; }
-    .todo-row { display: flex; align-items: center; gap: 8px; }
-    .custom-checkbox {
-      width: 18px; height: 18px;
-      border: 2px solid var(--cheese);
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .custom-checkbox.checked { background-color: var(--cheese); }
-    .custom-checkbox.checked::after { content: '✔'; font-size: 12px; color: #fff; }
-
-    .todo-text { font-size: 14px; font-weight: 600; flex: 1; }
-    .todo-text.done { text-decoration: line-through; color: var(--done-line); }
-
-    .sub-todo-list { margin-left: 26px; margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
-    .sub-todo-row { display: flex; align-items: center; gap: 8px; }
-    .sub-todo-row .custom-checkbox { width: 15px; height: 15px; }
-    .sub-todo-row .todo-text { font-size: 13px; font-weight: normal; }
-
-    /* 4행: 로그 및 진행도 */
-    .log-header { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-    .progress-bar-bg {
-      width: 100%; height: 16px;
-      background: #F1E7DB;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-bottom: 6px;
-      border: 1px solid var(--border);
-    }
-    .progress-bar-fill {
-      width: 33%; /* 예시 진행률 */
-      height: 100%;
-      background: repeating-linear-gradient(
-        45deg,
-        var(--sun-start),
-        var(--sun-start) 6px,
-        var(--sun-end) 6px,
-        var(--sun-end) 12px
-      );
-      transition: width 0.3s ease;
-    }
-    .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
-
-    /* 하단 안내 */
-    .footer-notice { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 10px; }
-
-    /* 버튼 */
-    .btn-wrap { text-align: center; margin-top: 14px; }
-    .btn-save {
-      background: var(--cheese);
-      border: none;
-      color: #FFF;
-      font-weight: bold;
-      padding: 10px 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(255, 169, 56, 0.3);
-    }
-    .btn-save:active { transform: scale(0.98); }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오늘만 해보자</title>
+<style>
+:root{--bg:#f8f3eb;--paper:#fffefb;--ink:#40362f;--muted:#8b7d71;--line:#eee2d4;--orange:#f59a45;--soft:#fff0d9;--yellow:#ffd66b;--green:#62a57a;--green-soft:#eaf6ed;--blue:#668ec6;--shadow:0 12px 34px #64492c14}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.5;word-break:keep-all}button,input{font:inherit}.app{min-height:100vh}
+.sidebar{position:fixed;inset:0 auto 0 0;z-index:10;width:228px;padding:30px 22px;background:var(--paper);border-right:1px solid var(--line);display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:11px;margin:0 8px 36px;font-size:18px;font-weight:900}.brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:14px;background:var(--yellow);font-size:21px}.nav{display:grid;gap:8px}.nav-item{display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:14px;color:var(--muted);font-weight:700}.nav-item.active{color:#8a4d12;background:var(--soft)}.nav-icon{width:22px;text-align:center;font-size:19px}.side-note{margin-top:auto;padding:16px;border-radius:18px;background:#fffaf1;color:var(--muted);font-size:12px}.side-note strong{display:block;color:var(--ink)}
+.main{margin-left:228px;padding:38px clamp(24px,4vw,64px) 72px}.content{width:min(1120px,100%);margin:auto}.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px}.eyebrow{margin:0 0 5px;color:var(--orange);font-size:13px;font-weight:800}h1{margin:0;font-size:clamp(26px,3vw,38px);letter-spacing:-.04em}.date{color:var(--muted);font-size:14px;font-weight:700}
+.today-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.85fr);gap:22px;align-items:start}.stack{display:grid;gap:18px;min-width:0}.card{min-width:0;padding:22px;border:1px solid var(--line);border-radius:24px;background:var(--paper);box-shadow:var(--shadow)}.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.card-title{margin:0;font-size:17px}.count{color:var(--orange);font-size:13px;font-weight:800}
+.room{position:relative;min-height:216px;overflow:hidden;background:linear-gradient(160deg,#fff8e9,#ffefd4)}.room:before{content:"";position:absolute;right:-35px;bottom:-70px;width:240px;height:170px;border-radius:50%;background:#ffd26b59}.room-label{position:relative;z-index:1;font-weight:900}.room-scene{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:22px;padding-top:24px}.cat{position:relative;flex:0 0 auto;width:112px;height:112px;border:3px dashed #e7b35c;border-radius:50% 50% 45% 45%;background:#ffd36c;display:grid;place-items:center;color:#8d5b22;font-size:13px;font-weight:800;text-align:center}.cat:before,.cat:after{content:"";position:absolute;top:-13px;width:35px;height:35px;background:#ffd36c;transform:rotate(45deg);border-radius:8px;z-index:-1}.cat:before{left:10px}.cat:after{right:10px}.bubble{position:relative;max-width:290px;padding:15px 17px;border:1px solid #f0cf9c;border-radius:18px;background:#fff;font-size:14px;font-weight:700;box-shadow:0 8px 18px #77532a12}.bubble:before{content:"";position:absolute;left:-8px;bottom:22px;width:14px;height:14px;background:#fff;border-left:1px solid #f0cf9c;border-bottom:1px solid #f0cf9c;transform:rotate(45deg)}
+.quick{display:flex;gap:10px}.quick input{min-width:0;flex:1;padding:13px 15px;border:1px solid var(--line);border-radius:14px;background:#fffdfa;color:var(--muted)}.primary{padding:0 18px;border:0;border-radius:14px;background:var(--orange);color:#fff;font-weight:800;cursor:default}
+.todo{display:flex;align-items:flex-start;gap:11px;padding:12px 2px;border-bottom:1px solid #f4ece3}.todo:last-child{border:0}.check{flex:0 0 20px;width:20px;height:20px;margin-top:2px;border:2px solid #d9cabc;border-radius:7px}.check.done{display:grid;place-items:center;border-color:var(--green);background:var(--green);color:white;font-size:12px}.todo-body{flex:1;min-width:0}.todo-title{font-size:14px;font-weight:750}.completed{color:#a99d92;text-decoration:line-through}.meta{margin:4px 0 0;color:var(--muted);font-size:12px}.tag{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:7px;background:#edf4ff;color:var(--blue);font-size:10px;font-weight:800}.subtasks{display:grid;gap:7px;margin-top:10px}.subtask{display:flex;align-items:center;gap:9px;color:#665a50;font-size:13px}.sub-check{width:16px;height:16px;border:1.5px solid #d9cabc;border-radius:5px}.fold{display:flex;justify-content:space-between;margin-top:8px;padding-top:13px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:700}.progress{height:10px;margin:14px 0 8px;border-radius:999px;background:#f2e9df;overflow:hidden}.progress span{display:block;width:40%;height:100%;background:linear-gradient(90deg,var(--orange),var(--yellow))}.progress-copy{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+.previews{margin-top:54px;scroll-margin-top:24px}.section-heading{margin-bottom:18px}.section-heading h2{margin:0 0 5px;font-size:24px}.section-heading p{margin:0;color:var(--muted);font-size:14px}.preview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.routine{padding:13px 0;border-bottom:1px solid #f3ebe2}.routine-top{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:800}.status{padding:3px 7px;border-radius:8px;font-size:10px;white-space:nowrap}.on{color:var(--green);background:var(--green-soft)}.pause{color:var(--muted);background:#f1eeea}.routine-info{margin-top:5px;color:var(--muted);font-size:11px}
+.calendar-head{display:flex;justify-content:space-between;margin-bottom:12px;font-size:13px;font-weight:850}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:10px}.calendar span{display:grid;place-items:center;aspect-ratio:1;border-radius:7px}.weekday{color:var(--muted);font-weight:800}.record{color:var(--green);background:var(--green-soft);font-weight:800}.calendar .today{color:white;background:var(--orange);font-weight:900}.record-list{display:grid;gap:9px;margin-top:15px;padding-top:14px;border-top:1px solid var(--line);font-size:12px}.record-row:before{content:"";display:inline-block;width:7px;height:7px;margin-right:8px;border-radius:50%;background:var(--green)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid #f3ebe2;font-size:13px;font-weight:750}.setting-value{color:var(--muted);font-size:11px;text-align:right}.toggle{position:relative;width:36px;height:21px;border-radius:99px;background:var(--orange)}.toggle:after{content:"";position:absolute;top:3px;right:3px;width:15px;height:15px;border-radius:50%;background:#fff}.logout{color:#c66c5d}.bottom-nav{display:none}
+@media(max-width:900px){.sidebar{width:196px}.main{margin-left:196px;padding-inline:24px}.today-layout,.preview-grid{grid-template-columns:1fr}}
+@media(max-width:680px){body{background:#fffaf1}.sidebar{display:none}.main{margin:0;padding:22px 16px 112px}.topbar{align-items:flex-start;flex-direction:column;gap:7px}.card{padding:18px;border-radius:20px}.room{min-height:250px}.room-scene{flex-direction:column;gap:16px}.cat{width:96px;height:96px}.bubble{width:100%;max-width:none;text-align:center}.bubble:before{left:calc(50% - 7px);top:-8px;bottom:auto;transform:rotate(135deg)}.previews{margin-top:42px}.bottom-nav{position:fixed;z-index:20;right:12px;bottom:12px;left:12px;display:grid;grid-template-columns:repeat(4,1fr);padding:7px;border:1px solid var(--line);border-radius:20px;background:#fffefbf5;box-shadow:0 10px 30px #4a352029;backdrop-filter:blur(12px)}.bottom-item{display:grid;place-items:center;gap:2px;padding:7px 2px;border-radius:14px;color:var(--muted);font-size:10px;font-weight:800;text-decoration:none}.bottom-item span:first-child{font-size:19px}.bottom-item.active{color:#8a4d12;background:var(--soft)}}
+@media(max-width:360px){.main{padding-inline:12px}.card{padding:15px}.quick{flex-direction:column}.primary{min-height:44px}}
+</style>
 </head>
-<body>
-
-  <div>
-    <!-- 캡처 대상 영역 -->
-    <div id="capture-area">
-      <!-- 1행: 해뜨는 헤더 -->
-      <div class="header">
-        <div class="header-sun">🌅</div>
-        <div class="header-title">오늘만 해보자</div>
-      </div>
-
-      <!-- 2행: NPC 치즈 -->
-      <div class="npc-section">
-        <div class="npc-avatar">🐱</div>
-        <div class="npc-bubble" id="npc-text">어제는 잊어라냥. 오늘 다시 시작!</div>
-      </div>
-
-      <!-- 3행: 할일 목록 -->
-      <div class="section-title">할일</div>
-      <div class="card">
-        <!-- 1번 메인 할일 + 하위할일 -->
-        <div class="todo-item">
-          <div class="todo-row">
-            <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
-            <span class="todo-text">기출문제 풀기</span>
-          </div>
-          <div class="sub-todo-list">
-            <div class="sub-todo-row">
-              <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
-              <span class="todo-text">2601</span>
-            </div>
-            <div class="sub-todo-row">
-              <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
-              <span class="todo-text">2602</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2번 메인 할일 -->
-        <div class="todo-item">
-          <div class="todo-row">
-            <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
-            <span class="todo-text">설거지하기</span>
-          </div>
-        </div>
-
-        <!-- 3번 메인 할일 (완료 예시) -->
-        <div class="todo-item">
-          <div class="todo-row">
-            <div class="custom-checkbox checked" onclick="toggleCheck(this)"></div>
-            <span class="todo-text done">아침 기록하기</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4행: 로그 및 진행도 -->
-      <div class="section-title">로그</div>
-      <div class="card">
-        <div class="log-header">해냄 <span id="done-count" style="color:var(--cheese)">1</span> 개</div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="progress-fill"></div>
-        </div>
-        <div class="progress-info">
-          <span>진행도</span>
-          <span><strong id="total-count">3</strong> 총개수</span>
-        </div>
-      </div>
-
-      <!-- 최하단 안내문구 -->
-      <div class="footer-notice">* 새벽 3시 초기화 됩니다.</div>
-    </div>
-
-    <!-- 이미지 저장 버튼 -->
-    <div class="btn-wrap">
-      <button class="btn-save" onclick="saveAsImage()">📷 이미지로 저장하기</button>
-    </div>
-  </div>
-
-  <script>
-    // NPC 대사 목록 & 랜덤 표시
-    const catMessages = [
-      "어제는 잊어라냥. 오늘 다시 시작!",
-      "오늘은 오늘의 해가 뜬다냥 ☀️",
-      "어제 무슨 일이 있었더라? 잊어버렸다냥 🐾"
-    ];
-    document.getElementById('npc-text').innerText = catMessages[Math.floor(Math.random() * catMessages.length)];
-
-    // 체크 토글
-    function toggleCheck(el) {
-      el.classList.toggle('checked');
-      const text = el.nextElementSibling;
-      if (text) text.classList.toggle('done');
-    }
-
-    // 이미지 저장 기능
-    function saveAsImage() {
-      const target = document.getElementById('capture-area');
-      html2canvas(target, { scale: 2 }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = '오늘만해보자_기록.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
-    }
-  </script>
-</body>
-</html>
+<body><div class="app">
+<aside class="sidebar" aria-label="주요 메뉴"><div class="brand"><span class="brand-mark">☀️</span>오늘만 해보자</div><nav class="nav"><div class="nav-item active"><span class="nav-icon">🏠</span>오늘</div><div class="nav-item"><span class="nav-icon">🗂️</span>관리</div><div class="nav-item"><span class="nav-icon">📅</span>기록</div><div class="nav-item"><span class="nav-icon">⚙️</span>설정</div></nav><div class="side-note"><strong>치즈의 한마디</strong>완벽한 하루보다<br>시작한 오늘이 더 멋지다냥!</div></aside>
+<main class="main"><div class="content">
+<header class="topbar"><div><p class="eyebrow">오늘만, 가볍게 시작해요</p><h1>오늘만 해보자</h1></div><div class="date">2026년 8월 24일 월요일</div></header>
+<section class="today-layout" aria-label="오늘 화면"><div class="stack">
+<article class="card room"><div class="room-label">치즈의 방</div><div class="room-scene"><div class="cat" role="img" aria-label="치즈 NPC 이미지 자리">치즈 NPC<br>이미지 자리</div><div class="bubble">좋은 아침이다냥! 오늘 할 일도 하나씩 같이 해보자 🧀</div></div></article>
+<article class="card"><div class="card-head"><h2 class="card-title">빠른 할 일</h2><span class="count">바로 적기</span></div><div class="quick"><input value="물 한 잔 마시기" aria-label="빠른 할 일 예시" readonly><button class="primary" type="button">추가</button></div></article>
+<article class="card"><div class="card-head"><h2 class="card-title">오늘 할 일</h2><span class="count">2 / 5 완료</span></div>
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="todo-title">기획서 초안 정리하기</div><div class="meta">직접 만든 할 일</div></div></div>
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="todo-title">운동 30분 하기</div><div class="meta">직접 만든 할 일 · 하위 할 일 2개</div><div class="subtasks"><div class="subtask"><span class="sub-check"></span>스트레칭 10분</div><div class="subtask"><span class="sub-check"></span>동네 한 바퀴 걷기</div></div></div></div>
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="todo-title">영양제 챙겨 먹기 <span class="tag">자동 노출</span></div><div class="meta">관리 · 매일 반복</div></div></div>
+<div class="todo"><span class="check done">✓</span><div class="todo-body"><div class="todo-title completed">침구 정리하기</div><div class="meta">오전 8:12 완료</div></div></div>
+<div class="todo"><span class="check done">✓</span><div class="todo-body"><div class="todo-title completed">아침 기록 남기기</div><div class="meta">오전 8:25 완료</div></div></div>
+<div class="fold"><span>⌄ 완료한 일 접기</span><span>2개</span></div></article></div>
+<aside class="stack"><article class="card"><div class="card-head"><h2 class="card-title">오늘의 해냄</h2><span class="count">40%</span></div><strong>벌써 2개나 해냈어요!</strong><div class="progress"><span></span></div><div class="progress-copy"><span>완료 2</span><span>전체 5</span></div></article><article class="card"><p class="eyebrow">CHEESE TIP</p><h2 class="card-title">작게 쪼개면 쉬워진다냥</h2><p class="meta">큰 할 일 아래에 하위 할 일을 추가해 오늘 할 수 있는 만큼만 시작해 보세요.</p></article></aside>
+</section>
+<section class="previews"><div class="section-heading"><h2>다른 화면 미리보기</h2><p>관리, 기록, 설정 화면의 주요 구성을 한눈에 확인해 보세요.</p></div><div class="preview-grid">
+<article class="card" id="manage"><div class="card-head"><h3 class="card-title">🗂️ 관리</h3><span class="count">3개 항목</span></div><div class="routine"><div class="routine-top"><span>영양제 챙겨 먹기</span><span class="status on">진행 중</span></div><div class="routine-info">매일 반복 · 다음 일정 8월 25일</div></div><div class="routine"><div class="routine-top"><span>화분에 물 주기</span><span class="status on">진행 중</span></div><div class="routine-info">3일마다 · 다음 일정 8월 26일</div></div><div class="routine"><div class="routine-top"><span>주간 회고 작성</span><span class="status pause">일시 정지</span></div><div class="routine-info">매주 일요일 · 다음 일정 없음</div></div></article>
+<article class="card" id="records"><div class="card-head"><h3 class="card-title">📅 기록</h3><span class="count">2026. 8</span></div><div class="calendar-head"><span>‹</span><span>8월</span><span>›</span></div><div class="calendar" aria-label="완료 기록 달력"><span class="weekday">일</span><span class="weekday">월</span><span class="weekday">화</span><span class="weekday">수</span><span class="weekday">목</span><span class="weekday">금</span><span class="weekday">토</span><span>2</span><span class="record">3</span><span>4</span><span class="record">5</span><span>6</span><span>7</span><span>8</span><span>9</span><span class="record">10</span><span>11</span><span>12</span><span>13</span><span class="record">14</span><span>15</span><span>16</span><span>17</span><span class="record">18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span class="today">24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span></div><div class="record-list"><div class="record-row">침구 정리하기 · 08:12</div><div class="record-row">아침 기록 남기기 · 08:25</div></div></article>
+<article class="card" id="settings"><div class="card-head"><h3 class="card-title">⚙️ 설정</h3><span class="count">내 정보</span></div><div class="setting-row"><span>계정</span><span class="setting-value">cheese@example.com ›</span></div><div class="setting-row"><span>알림</span><span class="toggle" aria-label="알림 켜짐 예시"></span></div><div class="setting-row"><span>알림 시간</span><span class="setting-value">매일 오전 8:00 ›</span></div><div class="setting-row logout"><span>로그아웃</span><span>›</span></div></article>
+</div></section></div></main>
+<nav class="bottom-nav" aria-label="모바일 주요 메뉴"><div class="bottom-item active"><span>🏠</span><span>오늘</span></div><div class="bottom-item"><span>🗂️</span><span>관리</span></div><div class="bottom-item"><span>📅</span><span>기록</span></div><div class="bottom-item"><span>⚙️</span><span>설정</span></div></nav>
+</div></body></html>
