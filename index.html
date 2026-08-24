@@ -1,0 +1,250 @@
+html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘만 해보자</title>
+  <!-- 이미지 저장을 위한 CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --bg: #FFFDF9;
+      --card-bg: #FFFFFF;
+      --sun-start: #FF9E44;
+      --sun-end: #FFD84D;
+      --cheese: #FFA938;
+      --text: #4A3828;
+      --text-muted: #A39688;
+      --border: #F3E3D0;
+      --done-line: #BDB0A4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", Roboto, sans-serif; }
+    body { background-color: #F7EFE5; display: flex; justify-content: center; padding: 20px; color: var(--text); }
+
+    /* 공유 이미지 캡처 영역 */
+    #capture-area {
+      width: 100%;
+      max-width: 400px;
+      background: var(--bg);
+      border-radius: 24px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 24px rgba(74, 56, 40, 0.08);
+      border: 2px solid var(--border);
+    }
+
+    /* 1행: 일출 헤더 */
+    .header {
+      text-align: center;
+      padding: 16px 0;
+      background: radial-gradient(circle at 50% 120%, var(--sun-end) 0%, var(--sun-start) 45%, transparent 70%);
+      border-radius: 18px;
+      margin-bottom: 16px;
+    }
+    .header-sun { font-size: 32px; line-height: 1; }
+    .header-title { font-size: 22px; font-weight: 800; color: #5C3200; margin-top: 4px; }
+
+    /* 2행: NPC 치즈 */
+    .npc-section { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .npc-avatar { font-size: 36px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+    .npc-bubble {
+      position: relative;
+      background: var(--card-bg);
+      border: 2px solid var(--cheese);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+    }
+    .npc-bubble::before {
+      content: '';
+      position: absolute;
+      left: -8px; top: 50%; transform: translateY(-50%);
+      border-width: 6px 8px 6px 0;
+      border-style: solid;
+      border-color: transparent var(--cheese) transparent transparent;
+    }
+
+    /* 카드 박스 공통 */
+    .section-title { font-size: 15px; font-weight: bold; margin-bottom: 8px; color: var(--text); }
+    .card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* 3행: 할 일 목록 */
+    .todo-item { margin-bottom: 10px; }
+    .todo-row { display: flex; align-items: center; gap: 8px; }
+    .custom-checkbox {
+      width: 18px; height: 18px;
+      border: 2px solid var(--cheese);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .custom-checkbox.checked { background-color: var(--cheese); }
+    .custom-checkbox.checked::after { content: '✔'; font-size: 12px; color: #fff; }
+
+    .todo-text { font-size: 14px; font-weight: 600; flex: 1; }
+    .todo-text.done { text-decoration: line-through; color: var(--done-line); }
+
+    .sub-todo-list { margin-left: 26px; margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+    .sub-todo-row { display: flex; align-items: center; gap: 8px; }
+    .sub-todo-row .custom-checkbox { width: 15px; height: 15px; }
+    .sub-todo-row .todo-text { font-size: 13px; font-weight: normal; }
+
+    /* 4행: 로그 및 진행도 */
+    .log-header { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+    .progress-bar-bg {
+      width: 100%; height: 16px;
+      background: #F1E7DB;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 6px;
+      border: 1px solid var(--border);
+    }
+    .progress-bar-fill {
+      width: 33%; /* 예시 진행률 */
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--sun-start),
+        var(--sun-start) 6px,
+        var(--sun-end) 6px,
+        var(--sun-end) 12px
+      );
+      transition: width 0.3s ease;
+    }
+    .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
+
+    /* 하단 안내 */
+    .footer-notice { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 10px; }
+
+    /* 버튼 */
+    .btn-wrap { text-align: center; margin-top: 14px; }
+    .btn-save {
+      background: var(--cheese);
+      border: none;
+      color: #FFF;
+      font-weight: bold;
+      padding: 10px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 169, 56, 0.3);
+    }
+    .btn-save:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+
+  <div>
+    <!-- 캡처 대상 영역 -->
+    <div id="capture-area">
+      <!-- 1행: 해뜨는 헤더 -->
+      <div class="header">
+        <div class="header-sun">🌅</div>
+        <div class="header-title">오늘만 해보자</div>
+      </div>
+
+      <!-- 2행: NPC 치즈 -->
+      <div class="npc-section">
+        <div class="npc-avatar">🐱</div>
+        <div class="npc-bubble" id="npc-text">어제는 잊어라냥. 오늘 다시 시작!</div>
+      </div>
+
+      <!-- 3행: 할일 목록 -->
+      <div class="section-title">할일</div>
+      <div class="card">
+        <!-- 1번 메인 할일 + 하위할일 -->
+        <div class="todo-item">
+          <div class="todo-row">
+            <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
+            <span class="todo-text">기출문제 풀기</span>
+          </div>
+          <div class="sub-todo-list">
+            <div class="sub-todo-row">
+              <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
+              <span class="todo-text">2601</span>
+            </div>
+            <div class="sub-todo-row">
+              <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
+              <span class="todo-text">2602</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2번 메인 할일 -->
+        <div class="todo-item">
+          <div class="todo-row">
+            <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
+            <span class="todo-text">설거지하기</span>
+          </div>
+        </div>
+
+        <!-- 3번 메인 할일 (완료 예시) -->
+        <div class="todo-item">
+          <div class="todo-row">
+            <div class="custom-checkbox checked" onclick="toggleCheck(this)"></div>
+            <span class="todo-text done">아침 기록하기</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4행: 로그 및 진행도 -->
+      <div class="section-title">로그</div>
+      <div class="card">
+        <div class="log-header">해냄 <span id="done-count" style="color:var(--cheese)">1</span> 개</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-info">
+          <span>진행도</span>
+          <span><strong id="total-count">3</strong> 총개수</span>
+        </div>
+      </div>
+
+      <!-- 최하단 안내문구 -->
+      <div class="footer-notice">* 새벽 3시 초기화 됩니다.</div>
+    </div>
+
+    <!-- 이미지 저장 버튼 -->
+    <div class="btn-wrap">
+      <button class="btn-save" onclick="saveAsImage()">📷 이미지로 저장하기</button>
+    </div>
+  </div>
+
+  <script>
+    // NPC 대사 목록 & 랜덤 표시
+    const catMessages = [
+      "어제는 잊어라냥. 오늘 다시 시작!",
+      "오늘은 오늘의 해가 뜬다냥 ☀️",
+      "어제 무슨 일이 있었더라? 잊어버렸다냥 🐾"
+    ];
+    document.getElementById('npc-text').innerText = catMessages[Math.floor(Math.random() * catMessages.length)];
+
+    // 체크 토글
+    function toggleCheck(el) {
+      el.classList.toggle('checked');
+      const text = el.nextElementSibling;
+      if (text) text.classList.toggle('done');
+    }
+
+    // 이미지 저장 기능
+    function saveAsImage() {
+      const target = document.getElementById('capture-area');
+      html2canvas(target, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = '오늘만해보자_기록.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
