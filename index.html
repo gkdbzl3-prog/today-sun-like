@@ -1,250 +1,42 @@
-html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오늘만 해보자</title>
-  <!-- 이미지 저장을 위한 CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <style>
-    :root {
-      --bg: #FFFDF9;
-      --card-bg: #FFFFFF;
-      --sun-start: #FF9E44;
-      --sun-end: #FFD84D;
-      --cheese: #FFA938;
-      --text: #4A3828;
-      --text-muted: #A39688;
-      --border: #F3E3D0;
-      --done-line: #BDB0A4;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", Roboto, sans-serif; }
-    body { background-color: #F7EFE5; display: flex; justify-content: center; padding: 20px; color: var(--text); }
-
-    /* 공유 이미지 캡처 영역 */
-    #capture-area {
-      width: 100%;
-      max-width: 400px;
-      background: var(--bg);
-      border-radius: 24px;
-      padding: 24px 20px;
-      box-shadow: 0 8px 24px rgba(74, 56, 40, 0.08);
-      border: 2px solid var(--border);
-    }
-
-    /* 1행: 일출 헤더 */
-    .header {
-      text-align: center;
-      padding: 16px 0;
-      background: radial-gradient(circle at 50% 120%, var(--sun-end) 0%, var(--sun-start) 45%, transparent 70%);
-      border-radius: 18px;
-      margin-bottom: 16px;
-    }
-    .header-sun { font-size: 32px; line-height: 1; }
-    .header-title { font-size: 22px; font-weight: 800; color: #5C3200; margin-top: 4px; }
-
-    /* 2행: NPC 치즈 */
-    .npc-section { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-    .npc-avatar { font-size: 36px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-    .npc-bubble {
-      position: relative;
-      background: var(--card-bg);
-      border: 2px solid var(--cheese);
-      border-radius: 14px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      flex: 1;
-    }
-    .npc-bubble::before {
-      content: '';
-      position: absolute;
-      left: -8px; top: 50%; transform: translateY(-50%);
-      border-width: 6px 8px 6px 0;
-      border-style: solid;
-      border-color: transparent var(--cheese) transparent transparent;
-    }
-
-    /* 카드 박스 공통 */
-    .section-title { font-size: 15px; font-weight: bold; margin-bottom: 8px; color: var(--text); }
-    .card {
-      background: var(--card-bg);
-      border: 1.5px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    /* 3행: 할 일 목록 */
-    .todo-item { margin-bottom: 10px; }
-    .todo-row { display: flex; align-items: center; gap: 8px; }
-    .custom-checkbox {
-      width: 18px; height: 18px;
-      border: 2px solid var(--cheese);
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .custom-checkbox.checked { background-color: var(--cheese); }
-    .custom-checkbox.checked::after { content: '✔'; font-size: 12px; color: #fff; }
-
-    .todo-text { font-size: 14px; font-weight: 600; flex: 1; }
-    .todo-text.done { text-decoration: line-through; color: var(--done-line); }
-
-    .sub-todo-list { margin-left: 26px; margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
-    .sub-todo-row { display: flex; align-items: center; gap: 8px; }
-    .sub-todo-row .custom-checkbox { width: 15px; height: 15px; }
-    .sub-todo-row .todo-text { font-size: 13px; font-weight: normal; }
-
-    /* 4행: 로그 및 진행도 */
-    .log-header { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-    .progress-bar-bg {
-      width: 100%; height: 16px;
-      background: #F1E7DB;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-bottom: 6px;
-      border: 1px solid var(--border);
-    }
-    .progress-bar-fill {
-      width: 33%; /* 예시 진행률 */
-      height: 100%;
-      background: repeating-linear-gradient(
-        45deg,
-        var(--sun-start),
-        var(--sun-start) 6px,
-        var(--sun-end) 6px,
-        var(--sun-end) 12px
-      );
-      transition: width 0.3s ease;
-    }
-    .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
-
-    /* 하단 안내 */
-    .footer-notice { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 10px; }
-
-    /* 버튼 */
-    .btn-wrap { text-align: center; margin-top: 14px; }
-    .btn-save {
-      background: var(--cheese);
-      border: none;
-      color: #FFF;
-      font-weight: bold;
-      padding: 10px 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(255, 169, 56, 0.3);
-    }
-    .btn-save:active { transform: scale(0.98); }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오늘만 해보자 | 오늘</title>
+<style>
+:root{--bg:#fffaf1;--card:#fff;--ink:#40382f;--muted:#988e82;--line:#eee3d5;--yellow:#ffc94d;--soft:#fff1c2;--orange:#df8139;--green:#70a87d;--shadow:0 12px 32px #5d472214}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 5%,#ffe29a40,transparent 28rem),var(--bg);color:var(--ink);font-family:Pretendard,"Apple SD Gothic Neo",system-ui,sans-serif;word-break:keep-all}button,input{font:inherit}
+.side{position:fixed;inset:0 auto 0 0;width:240px;padding:34px 24px 25px;background:#ffffffeb;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:5}.brand{display:flex;align-items:center;gap:11px;margin:0 8px 42px;font-size:18px;font-weight:850}.logo{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:var(--yellow);color:#754414;font-size:21px;box-shadow:0 5px 12px #ef913d38}.nav{display:grid;gap:8px}.nav-item{min-height:52px;padding:0 16px;border-radius:15px;display:flex;align-items:center;gap:14px;color:#766d61;font-size:15px;font-weight:750}.nav-item.on{background:var(--soft);color:#884916}.icon{width:24px;text-align:center;font-size:20px}.side-note{margin-top:auto;padding:16px;border-radius:16px;background:#faf5ed;color:var(--muted);font-size:12px;line-height:1.6}
+.page{margin-left:240px;min-height:100vh}.top{height:94px;padding:0 clamp(28px,5vw,72px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee5d8b3}.top h1{margin:0;font-size:24px;letter-spacing:-.04em}.date{color:var(--muted);font-size:14px;font-weight:650}.content{width:min(100%,1040px);margin:auto;padding:38px 34px 80px}
+.room{position:relative;min-height:254px;padding:27px 34px;overflow:hidden;border:1px solid #f1dfc4;border-radius:28px;background:linear-gradient(150deg,#fff9e9,#fff1cc);box-shadow:var(--shadow)}.room:after{content:"";position:absolute;width:260px;height:260px;right:-80px;top:-125px;border-radius:50%;background:#ffffff73}.room-head{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center}.room h2{margin:0;font-size:19px}.level{padding:7px 11px;border-radius:20px;background:#ffffffbd;color:#bf6729;font-size:12px;font-weight:800}.scene{position:relative;z-index:2;min-height:160px;padding-top:14px;display:flex;align-items:center;justify-content:center;gap:28px}
+.cat{position:relative;width:120px;height:116px;flex:none}.ear{position:absolute;top:8px;width:38px;height:42px;background:#e9a342;transform:rotate(45deg);border-radius:8px 18px}.ear.a{left:18px}.ear.b{right:18px}.face{position:absolute;inset:20px 7px 3px;border-radius:48% 48% 43% 43%;background:#f1ae4e;box-shadow:inset 0 -8px #c26f2514,0 9px 15px #b168231f}.face:before{content:"•   •";position:absolute;top:34px;left:0;right:0;text-align:center;color:#5c4029;font-size:23px;letter-spacing:11px;padding-left:10px}.face:after{content:"ᴗ";position:absolute;top:57px;left:0;right:0;text-align:center;font-size:20px;font-weight:900}.patch{position:absolute;z-index:2;top:28px;left:31px;width:24px;height:16px;border-radius:50%;background:#c87933;transform:rotate(-15deg)}.bubble{position:relative;max-width:355px;padding:17px 21px;border:1px solid #ecd8ba;border-radius:19px;background:#fffffff0;font-size:15px;font-weight:750;line-height:1.55;box-shadow:0 8px 20px #7c562312}.bubble:before{content:"";position:absolute;left:-10px;top:45%;width:18px;height:18px;background:#fff;border-left:1px solid #ecd8ba;border-bottom:1px solid #ecd8ba;transform:rotate(45deg)}
+.quick{margin:22px 0 34px;padding:9px 9px 9px 20px;display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 8px 22px #5740220d}.quick>span{color:var(--orange);font-size:23px}.quick input{min-width:0;flex:1;border:0;outline:0;background:none}.quick input::placeholder{color:#b4ab9f}.quick button{padding:11px 18px;border:0;border-radius:12px;background:var(--ink);color:#fff;font-size:13px;font-weight:800}
+.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.85fr);gap:24px;align-items:start}.stack{display:grid;gap:24px}.card{padding:23px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:0 8px 25px #5740220b}.heading{margin:0 0 17px;display:flex;justify-content:space-between;font-size:16px}.count{color:var(--orange);font-size:12px}.list{display:grid;gap:4px}.todo{min-width:0;padding:11px 5px;display:flex;align-items:flex-start;gap:11px}.check{width:20px;height:20px;margin-top:1px;flex:none;display:grid;place-items:center;border:1.8px solid #d7ccbc;border-radius:7px}.check.done{border-color:#e5b75b;background:var(--yellow);color:#764613;font-size:13px;font-weight:900}.todo-body{min-width:0;flex:1}.line{display:flex;align-items:center;gap:8px;line-height:1.45}.text{min-width:0;font-size:14px;font-weight:650}.meta{margin-top:4px;color:#aaa094;font-size:11px}.subs{margin:7px 0 0 4px;padding-left:13px;border-left:2px solid #f0e7dc;display:grid;gap:7px}.sub{display:flex;align-items:center;gap:8px;color:#6f675e;font-size:12px}.sub-dot{width:13px;height:13px;border:1.5px solid #d9cebf;border-radius:5px}.done-row .text{color:#aaa299;text-decoration:line-through}.done-row .meta{color:#c8c1b8}.source{color:var(--green);font-weight:800}
+.badge{margin-left:auto;padding:4px 7px;flex:none;border-radius:7px;font-size:10px;font-weight:850}.soon{background:#fff2c5;color:#9b6810}.today{background:#ffead8;color:#bd6028}.late{background:#fbe2dd;color:#bd5848}.over{background:#eee9e3;color:#71685e}
+.clean{padding:23px;border-radius:22px;color:#fff;background:linear-gradient(145deg,#5d5145,#3e3933);box-shadow:var(--shadow)}.clean-top,.progress-copy{display:flex;justify-content:space-between;align-items:center}.clean h2{margin:0;font-size:16px}.clean strong{color:#ffd46c;font-size:13px}.progress{height:10px;margin:18px 0 9px;overflow:hidden;border-radius:10px;background:#ffffff24}.fill{width:64%;height:100%;background:linear-gradient(90deg,#ffb645,#ffe178)}.progress-copy{color:#d5cfc8;font-size:11px}.tip{margin:18px 0 0;padding-top:15px;border-top:1px solid #ffffff1a;color:#ded8d2;font-size:12px;line-height:1.55}.empty{text-align:center;padding:25px 15px}.empty-icon{font-size:30px}.empty p{margin:8px 0 14px;color:var(--muted);font-size:12px}.empty button{border:1px solid #efd5ae;border-radius:10px;padding:8px 12px;background:#fff9ec;color:#bf6729;font-size:11px;font-weight:800}.reset{text-align:center;margin:25px 0 0;color:#ada499;font-size:11px}.mobile{display:none}
+@media(max-width:900px){.side{width:205px;padding-inline:18px}.page{margin-left:205px}.content{padding-inline:24px}.layout{grid-template-columns:1fr}}
+@media(max-width:680px){.side{display:none}.page{margin:0}.top{height:70px;padding:0 20px}.top h1{font-size:20px}.date{font-size:12px}.content{padding:18px 16px 108px}.room{min-height:235px;padding:22px 20px;border-radius:22px}.scene{min-height:162px;justify-content:flex-start;gap:12px}.cat{transform:scale(.8);margin:0 -10px}.bubble{padding:14px 15px;font-size:13px}.quick{margin:16px 0 25px;padding-left:15px}.quick button{padding:10px 13px}.card,.clean{padding:20px 17px;border-radius:19px}.layout,.stack{gap:18px}.mobile{position:fixed;z-index:10;left:0;right:0;bottom:0;height:calc(72px + env(safe-area-inset-bottom));padding:7px 12px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:#fffffff2;backdrop-filter:blur(16px)}.mobile .nav-item{min-height:58px;padding:5px 2px;flex-direction:column;justify-content:center;gap:2px;border-radius:12px;font-size:10px}.mobile .icon{font-size:19px}}
+@media(max-width:370px){.top{padding-inline:15px}.content{padding-inline:12px}.room{padding-inline:15px}.bubble{font-size:12px}.quick input::placeholder{font-size:12px}}
+</style>
 </head>
 <body>
-
-  <div>
-    <!-- 캡처 대상 영역 -->
-    <div id="capture-area">
-      <!-- 1행: 해뜨는 헤더 -->
-      <div class="header">
-        <div class="header-sun">🌅</div>
-        <div class="header-title">오늘만 해보자</div>
-      </div>
-
-      <!-- 2행: NPC 치즈 -->
-      <div class="npc-section">
-        <div class="npc-avatar">🐱</div>
-        <div class="npc-bubble" id="npc-text">어제는 잊어라냥. 오늘 다시 시작!</div>
-      </div>
-
-      <!-- 3행: 할일 목록 -->
-      <div class="section-title">할일</div>
-      <div class="card">
-        <!-- 1번 메인 할일 + 하위할일 -->
-        <div class="todo-item">
-          <div class="todo-row">
-            <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
-            <span class="todo-text">기출문제 풀기</span>
-          </div>
-          <div class="sub-todo-list">
-            <div class="sub-todo-row">
-              <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
-              <span class="todo-text">2601</span>
-            </div>
-            <div class="sub-todo-row">
-              <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
-              <span class="todo-text">2602</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2번 메인 할일 -->
-        <div class="todo-item">
-          <div class="todo-row">
-            <div class="custom-checkbox" onclick="toggleCheck(this)"></div>
-            <span class="todo-text">설거지하기</span>
-          </div>
-        </div>
-
-        <!-- 3번 메인 할일 (완료 예시) -->
-        <div class="todo-item">
-          <div class="todo-row">
-            <div class="custom-checkbox checked" onclick="toggleCheck(this)"></div>
-            <span class="todo-text done">아침 기록하기</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4행: 로그 및 진행도 -->
-      <div class="section-title">로그</div>
-      <div class="card">
-        <div class="log-header">해냄 <span id="done-count" style="color:var(--cheese)">1</span> 개</div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="progress-fill"></div>
-        </div>
-        <div class="progress-info">
-          <span>진행도</span>
-          <span><strong id="total-count">3</strong> 총개수</span>
-        </div>
-      </div>
-
-      <!-- 최하단 안내문구 -->
-      <div class="footer-notice">* 새벽 3시 초기화 됩니다.</div>
-    </div>
-
-    <!-- 이미지 저장 버튼 -->
-    <div class="btn-wrap">
-      <button class="btn-save" onclick="saveAsImage()">📷 이미지로 저장하기</button>
-    </div>
-  </div>
-
-  <script>
-    // NPC 대사 목록 & 랜덤 표시
-    const catMessages = [
-      "어제는 잊어라냥. 오늘 다시 시작!",
-      "오늘은 오늘의 해가 뜬다냥 ☀️",
-      "어제 무슨 일이 있었더라? 잊어버렸다냥 🐾"
-    ];
-    document.getElementById('npc-text').innerText = catMessages[Math.floor(Math.random() * catMessages.length)];
-
-    // 체크 토글
-    function toggleCheck(el) {
-      el.classList.toggle('checked');
-      const text = el.nextElementSibling;
-      if (text) text.classList.toggle('done');
-    }
-
-    // 이미지 저장 기능
-    function saveAsImage() {
-      const target = document.getElementById('capture-area');
-      html2canvas(target, { scale: 2 }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = '오늘만해보자_기록.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
-    }
-  </script>
-</body>
-</html>
+<aside class="side"><div class="brand"><span class="logo">☀</span>오늘만 해보자</div><nav class="nav"><div class="nav-item on"><span class="icon">●</span>오늘</div><div class="nav-item"><span class="icon">▦</span>관리</div><div class="nav-item"><span class="icon">◷</span>기록</div><div class="nav-item"><span class="icon">⚙</span>설정</div></nav><div class="side-note">오늘 할 일은 새벽 3시에<br>새로운 하루로 정리돼요.</div></aside>
+<main class="page"><header class="top"><h1>오늘만 해보자</h1><time class="date" datetime="2026-08-24">8월 24일 월요일</time></header>
+<div class="content">
+<section class="room" aria-labelledby="room-title"><div class="room-head"><h2 id="room-title">치즈의 방</h2><span class="level">청결 Lv. 3</span></div><div class="scene"><div class="cat" aria-label="치즈 고양이 캐릭터"><i class="ear a"></i><i class="ear b"></i><i class="face"></i><i class="patch"></i></div><div class="bubble">어제는 잊어라냥.<br>오늘 다시 시작!</div></div></section>
+<form class="quick"><span>＋</span><input aria-label="오늘 할 일" placeholder="오늘 할 일을 빠르게 적어보세요"><button type="button">추가</button></form>
+<div class="layout"><div class="stack">
+<section class="card"><h2 class="heading"><span>오늘 할 일</span><span class="count">3개</span></h2><div class="list">
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="line"><span class="text">기출문제 풀기</span></div><div class="subs"><div class="sub"><span class="sub-dot"></span>영어 독해 2회</div><div class="sub"><span class="sub-dot"></span>오답 노트 정리</div></div></div></div>
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="line"><span class="text">저녁 먹고 30분 산책하기</span></div><div class="meta">오늘의 나를 위한 약속</div></div></div>
+<div class="todo done-row"><span class="check done">✓</span><div class="todo-body"><div class="line"><span class="text">아침 물 한 잔 마시기</span></div><div class="meta">오전 8:12 완료</div></div></div></div></section>
+<section class="card"><h2 class="heading"><span>관리에서 가져온 할 일</span><span class="count">4개</span></h2><div class="list">
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="line"><span class="text">발표 자료 최종 검토</span><span class="badge soon">D-1</span></div><div class="meta"><span class="source">관리</span> · 프로젝트</div></div></div>
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="line"><span class="text">도서 반납하기</span><span class="badge today">오늘</span></div><div class="meta"><span class="source">관리</span> · 생활</div></div></div>
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="line"><span class="text">정기 결제 확인</span><span class="badge late">1일 지남</span></div><div class="meta"><span class="source">관리</span> · 금융</div></div></div>
+<div class="todo"><span class="check"></span><div class="todo-body"><div class="line"><span class="text">건강검진 예약</span><span class="badge over">기한 지남</span></div><div class="meta"><span class="source">관리</span> · 건강</div></div></div></div></section>
+<section class="card"><h2 class="heading"><span>완료한 일</span><span class="count">2개</span></h2><div class="list"><div class="todo done-row"><span class="check done">✓</span><div class="todo-body"><span class="text">침구 정리하기</span></div></div><div class="todo done-row"><span class="check done">✓</span><div class="todo-body"><span class="text">영양제 챙겨 먹기</span></div></div></div></section>
+</div><aside class="stack"><section class="clean"><div class="clean-top"><h2>치즈의 청결도</h2><strong>64%</strong></div><div class="progress"><div class="fill"></div></div><div class="progress-copy"><span>보송보송해지는 중</span><span>다음까지 36%</span></div><p class="tip">할 일을 하나씩 끝내면<br>치즈의 방이 더 깨끗해져요.</p></section><section class="card empty"><div class="empty-icon">☁</div><p>오늘은 아직 아무것도 없다냥</p><button type="button">＋ 할 일 추가</button></section></aside></div>
+<p class="reset">오늘의 목록은 매일 새벽 3시에 새로 시작해요.</p></div></main>
+<nav class="mobile" aria-label="모바일 주요 메뉴"><div class="nav-item on"><span class="icon">●</span>오늘</div><div class="nav-item"><span class="icon">▦</span>관리</div><div class="nav-item"><span class="icon">◷</span>기록</div><div class="nav-item"><span class="icon">⚙</span>설정</div></nav>
+</body></html>
