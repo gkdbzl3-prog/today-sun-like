@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>오늘만 해보자 — 치즈의 방</title>
+<style>
+/* ===================== 오늘만 해보자 — 냥이 목욕탕 테마 ===================== */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css');
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root{
+  --fog:#EEF3F3;
+  --tile:#FFFFFF;
+  --water:#5B8FA3;
+  --water-dark:#3F6E80;
+  --cheese:#E8A63D;
+  --cheese-soft:#FBE3B4;
+  --suds:#E7D9F2;
+  --suds-soft:#F3EBFA;
+  --ink:#2B2E33;
+  --ink-soft:#6B7278;
+  --line:#DCE6E7;
+  --danger:#C1594F;
+  --go:#5F9E74;
+  --radius:16px;
+  --font-display:'Gaegu', 'Pretendard Variable', sans-serif;
+  --font-body:'Pretendard Variable', 'Noto Sans KR', system-ui, sans-serif;
+  --font-mono:'JetBrains Mono', ui-monospace, monospace;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse at top left, #F5F9F9 0%, var(--fog) 55%),
+    var(--fog);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+button{ font-family:inherit; cursor:pointer; }
+input,select{ font-family:inherit; }
+::selection{ background:var(--cheese-soft); }
+:focus-visible{ outline:3px solid var(--water); outline-offset:2px; border-radius:6px; }
+
+#app{
+  display:flex;
+  min-height:100vh;
+}
+
+/* ---------- sidebar (desktop) ---------- */
+.sidebar{
+  width:96px;
+  flex-shrink:0;
+  background:var(--tile);
+  border-right:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:22px 0;
+  gap:6px;
+}
+.sidebar-logo{
+  font-family:var(--font-display);
+  font-size:28px;
+  margin-bottom:18px;
+}
+.navitem{
+  width:74px;
+  border:none;
+  background:none;
+  border-radius:14px;
+  padding:10px 4px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--ink-soft);
+  font-size:12.5px;
+  font-weight:600;
+  transition:background .15s, color .15s, transform .15s;
+}
+.navitem .navicon{ font-size:20px; }
+.navitem:hover{ background:var(--fog); color:var(--ink); }
+.navitem.active{ background:var(--water); color:#fff; transform:translateY(-1px); }
+
+/* ---------- main ---------- */
+.main-col{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.topbar{
+  padding:22px 32px 16px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, #F7FBFB 0%, rgba(247,251,251,0) 100%);
+}
+.topbar-row{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.app-title{
+  font-family:var(--font-display);
+  font-size:30px;
+  font-weight:700;
+  color:var(--water-dark);
+  margin:0;
+}
+.date-label{
+  font-family:var(--font-mono);
+  color:var(--ink-soft);
+  font-size:14px;
+}
+.mascot-row{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+/* ---------- cat / bath level (signature element) ---------- */
+.cat-tub{
+  position:relative;
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  background:var(--tile);
+  border:2px solid var(--line);
+  overflow:hidden;
+  flex-shrink:0;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.04);
+}
+.tub-water{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:var(--fill, 0%);
+  background:linear-gradient(180deg, rgba(91,143,163,.28), rgba(91,143,163,.55));
+  transition:height .5s ease;
+}
+.cat-face{ position:relative; width:100%; height:100%; z-index:2; }
+.cat-head{ fill:#C7CBCE; transition:fill .5s; }
+.cat-ear{ fill:#C7CBCE; transition:fill .5s; }
+.cat-eye{ fill:var(--ink); }
+.cat-mouth{ fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round; }
+.whisker{ stroke:#9AA0A4; stroke-width:1.4; }
+.stage-1 .cat-head, .stage-1 .cat-ear{ fill:#B9C8CE; }
+.stage-2 .cat-head, .stage-2 .cat-ear{ fill:#D9C7E6; }
+.stage-3 .cat-head, .stage-3 .cat-ear{ fill:#F2D9A0; }
+.stage-4 .cat-head, .stage-4 .cat-ear{ fill:var(--cheese); }
+.sparkle{ fill:#FFE9A8; opacity:0; }
+.stage-4 .sparkle{ opacity:1; animation:twinkle 1.6s ease-in-out infinite; }
+.sp2{ animation-delay:.3s !important; }
+.sp3{ animation-delay:.6s !important; }
+@keyframes twinkle{ 0%,100%{ opacity:.2; transform:scale(.7); } 50%{ opacity:1; transform:scale(1.15); } }
+.steam{
+  position:absolute;
+  bottom:8px;
+  width:6px; height:6px;
+  border-radius:50%;
+  background:rgba(255,255,255,.7);
+  opacity:0;
+  z-index:3;
+}
+.stage-2 .steam, .stage-3 .steam, .stage-4 .steam{ opacity:.8; animation:rise 2.6s ease-in infinite; }
+.s1{ left:22px; animation-delay:0s; }
+.s2{ left:40px; animation-delay:.8s; }
+.s3{ left:56px; animation-delay:1.5s; }
+@keyframes rise{ 0%{ transform:translateY(0) scale(.6); opacity:0; } 30%{ opacity:.8; } 100%{ transform:translateY(-46px) scale(1.3); opacity:0; } }
+.bubble{
+  position:absolute;
+  border-radius:50%;
+  background:rgba(231,217,242,.85);
+  border:1px solid rgba(255,255,255,.8);
+  opacity:0;
+  z-index:3;
+}
+.stage-2 .bubble, .stage-3 .bubble{ opacity:1; animation:pop 2.2s ease-in-out infinite; }
+.b1{ width:8px; height:8px; left:12px; bottom:14px; animation-delay:0s; }
+.b2{ width:6px; height:6px; left:60px; bottom:20px; animation-delay:.5s; }
+.b3{ width:5px; height:5px; left:34px; bottom:6px; animation-delay:1s; }
+@keyframes pop{ 0%,100%{ transform:scale(.8) translateY(0); } 50%{ transform:scale(1.15) translateY(-4px); } }
+
+.stage-label{
+  font-size:12px;
+  font-family:var(--font-mono);
+  color:var(--ink-soft);
+}
+
+.speech-bubble{
+  position:relative;
+  background:var(--tile);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  max-width:520px;
+  box-shadow:0 2px 10px rgba(63,110,128,.06);
+}
+.speech-bubble::before{
+  content:"";
+  position:absolute;
+  left:-8px; top:50%;
+  transform:translateY(-50%);
+  border:8px solid transparent;
+  border-right-color:var(--tile);
+}
+.bubble-text{
+  font-family:var(--font-display);
+  font-size:17px;
+}
+.bubble-btn{
+  border:1px solid var(--water);
+  background:var(--water);
+  color:#fff;
+  border-radius:999px;
+  padding:5px 12px;
+  font-size:12.5px;
+  font-weight:600;
+}
+.bubble-btn.ghost{ background:transparent; color:var(--water-dark); }
+
+/* ---------- bottom nav (mobile) ---------- */
+.bottomnav{ display:none; }
+
+/* ---------- content ---------- */
+#mainContent{
+  padding:22px 32px 80px;
+  max-width:720px;
+  width:100%;
+}
+.section-label{
+  font-size:13px;
+  font-weight:700;
+  color:var(--ink-soft);
+  margin:18px 0 8px;
+  letter-spacing:.02em;
+}
+.quickadd input{
+  width:100%;
+  padding:13px 16px;
+  border-radius:14px;
+  border:1.5px solid var(--line);
+  background:var(--tile);
+  font-size:15px;
+}
+.quickadd input:focus{ border-color:var(--water); }
+
+.empty-state{
+  margin-top:24px;
+  text-align:center;
+  padding:40px 20px;
+  background:var(--tile);
+  border:1.5px dashed var(--line);
+  border-radius:var(--radius);
+}
+.empty-state p{ font-family:var(--font-display); font-size:19px; margin:0 0 14px; }
+
+.todo-list{ list-style:none; margin:0; padding:0; }
+.todo-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--tile);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:11px 12px;
+  margin-bottom:7px;
+}
+.todo-row.sub-row{ margin-left:26px; background:#FBFDFD; }
+.todo-row.manage-row{ border-color:#EAD9C2; background:#FFFAF2; }
+.todo-row.dragging{ opacity:.4; }
+.todo-row[draggable="true"]{ cursor:grab; }
+
+.check{ position:relative; width:20px; height:20px; flex-shrink:0; display:flex; }
+.check input{ position:absolute; opacity:0; width:20px; height:20px; margin:0; cursor:pointer; }
+.checkmark{
+  width:20px; height:20px; border-radius:7px;
+  border:2px solid var(--line);
+  background:#fff;
+  display:block;
+  transition:background .15s, border-color .15s;
+}
+.check input:checked + .checkmark{ background:var(--go); border-color:var(--go); }
+.check input:checked + .checkmark::after{
+  content:"✓"; display:block; text-align:center; color:#fff; font-size:13px; line-height:17px; font-weight:700;
+}
+
+.todo-text{ flex:1; font-size:15px; }
+.todo-text.is-done{ text-decoration:line-through; color:#B7BCC0; }
+.row-icon-btn{
+  border:none; background:none; color:var(--ink-soft);
+  width:24px; height:24px; border-radius:8px; font-size:14px;
+  opacity:0; transition:opacity .12s, background .12s;
+}
+.todo-row:hover .row-icon-btn{ opacity:1; }
+.row-icon-btn:hover{ background:var(--fog); }
+
+.dday{
+  font-family:var(--font-mono);
+  font-size:12px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:999px;
+}
+.dday.is-soon{ background:var(--cheese-soft); color:#8A5E15; }
+.dday.is-today{ background:#DDEFEB; color:#2F7A66; }
+.dday.is-overdue{ background:#FBE1DE; color:var(--danger); }
+
+.sub-input-row{ margin-left:26px; }
+.sub-input{
+  width:100%; border:1.5px dashed var(--line); border-radius:10px; padding:9px 12px;
+  background:#FBFDFD; font-size:14px;
+}
+.empty-row{ color:var(--ink-soft); font-size:14px; padding:8px 4px; list-style:none; }
+
+.collapse-toggle{
+  border:none; background:none; color:var(--ink-soft);
+  font-size:13px; font-weight:600; margin:10px 0 6px; padding:4px 0;
+}
+.done-list .todo-row{ background:#F6F8F8; }
+
+/* ---------- toolbar / chips ---------- */
+.toolbar{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+.toolbar-right{ display:flex; gap:8px; }
+.btn-primary{
+  background:var(--water); color:#fff; border:none; border-radius:12px;
+  padding:10px 16px; font-size:14px; font-weight:700;
+  box-shadow:0 2px 0 var(--water-dark);
+}
+.btn-primary:active{ transform:translateY(1px); box-shadow:none; }
+.btn-ghost{
+  background:var(--tile); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:10px; padding:8px 13px; font-size:13.5px; font-weight:600;
+}
+.btn-ghost.danger{ color:var(--danger); border-color:#F1CFCA; }
+.chip{
+  background:var(--tile); border:1.5px solid var(--line); color:var(--ink-soft);
+  border-radius:999px; padding:7px 14px; font-size:13px; font-weight:600;
+}
+.chip-active{ background:var(--suds); border-color:var(--suds); color:var(--water-dark); }
+
+/* ---------- manage list ---------- */
+.cat-group{ margin-bottom:16px; }
+.cat-group-title{ font-size:12.5px; font-weight:700; color:var(--cheese); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+.manage-list{ list-style:none; margin:0; padding:0; }
+.manage-row-item{
+  position:relative;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:var(--tile); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; margin-bottom:7px;
+}
+.manage-row-main{ flex:1; cursor:pointer; }
+.manage-title{ font-size:15px; font-weight:600; }
+.manage-sub{ font-family:var(--font-mono); font-size:12px; color:var(--ink-soft); margin-top:2px; }
+.manage-sub.is-overdue{ color:var(--danger); }
+.manage-sub.is-today{ color:#2F7A66; }
+.complete-btn{ flex-shrink:0; }
+.tag{ font-size:11px; background:var(--fog); color:var(--ink-soft); border-radius:999px; padding:2px 8px; margin-left:6px; }
+
+.popup-menu{
+  position:absolute; right:0; top:calc(100% + 6px); z-index:20;
+  background:#fff; border:1px solid var(--line); border-radius:12px;
+  box-shadow:0 8px 24px rgba(43,46,51,.14);
+  min-width:220px; padding:6px;
+  display:flex; flex-direction:column;
+}
+.popup-menu button{
+  border:none; background:none; text-align:left; padding:9px 10px;
+  border-radius:8px; font-size:13.5px; color:var(--ink);
+}
+.popup-menu button:hover{ background:var(--fog); }
+.popup-menu button.danger{ color:var(--danger); }
+.popup-postpone{ display:flex; align-items:center; justify-content:space-between; padding:9px 10px; font-size:13.5px; gap:8px; }
+.popup-postpone input{ border:1px solid var(--line); border-radius:8px; padding:4px 6px; font-size:12.5px; }
+
+/* board view */
+.board{ display:flex; gap:14px; overflow-x:auto; padding-bottom:8px; }
+.board-col{ min-width:220px; background:#F5F8F8; border-radius:14px; padding:10px; }
+.board-col-title{ font-size:12.5px; font-weight:700; color:var(--cheese); margin-bottom:8px; }
+.board-card{ position:relative; background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:8px; cursor:pointer; }
+
+/* ---------- modal ---------- */
+.modal-backdrop{
+  position:fixed; inset:0; background:rgba(43,46,51,.35);
+  display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;
+}
+.modal{
+  background:#fff; border-radius:18px; padding:22px; width:100%; max-width:380px;
+  max-height:88vh; overflow-y:auto;
+  box-shadow:0 20px 50px rgba(0,0,0,.2);
+}
+.modal h3{ font-family:var(--font-display); font-size:21px; margin:0 0 14px; }
+.modal label{ display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:12px; }
+.modal input, .modal select{
+  display:block; width:100%; margin-top:5px; padding:9px 11px; border:1.5px solid var(--line);
+  border-radius:10px; font-size:14px; color:var(--ink);
+}
+.modal .checkline{ display:flex; align-items:center; gap:8px; font-weight:600; }
+.modal .checkline input{ width:auto; margin:0; }
+.modal-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:6px; }
+
+.minical-modal{ max-width:600px; }
+.minical-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.minical-head button{ border:1px solid var(--line); background:#fff; border-radius:8px; width:30px; height:30px; }
+.minical-months{ display:flex; gap:10px; overflow-x:auto; }
+
+/* ---------- calendar ---------- */
+.cal-card{ background:var(--tile); border:1px solid var(--line); border-radius:var(--radius); padding:14px; }
+.cal-card.small{ min-width:200px; padding:8px; }
+.cal-nav{ display:flex; align-items:center; justify-content:space-between; font-family:var(--font-mono); font-size:13px; margin-bottom:8px; }
+.cal-nav button{ border:1px solid var(--line); background:#fff; border-radius:8px; width:28px; height:28px; }
+.cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.cal-dow{ text-align:center; font-size:11px; color:var(--ink-soft); padding:2px 0; }
+.cal-cell{
+  position:relative; aspect-ratio:1/1; border:none; background:#F7FAFA; border-radius:8px;
+  display:flex; align-items:center; justify-content:center; font-size:12px;
+}
+.cal-cell.empty{ background:transparent; }
+.cal-cell.today{ outline:2px solid var(--water); }
+.cal-cell.sel{ background:var(--suds); }
+.cal-daynum{ position:relative; z-index:1; }
+.cal-badge{
+  position:absolute; bottom:2px; right:2px; background:var(--cheese); color:#fff;
+  font-size:9px; border-radius:50%; width:14px; height:14px; display:flex; align-items:center; justify-content:center;
+}
+.cal-cell.mini{ font-size:10px; }
+.cal-cell.mini.done{ background:var(--go); color:#fff; }
+
+.day-detail{ margin-top:16px; }
+.record-list{ list-style:none; margin:0; padding:0; }
+.record-list li{
+  background:var(--tile); border:1px solid var(--line); border-radius:10px;
+  padding:9px 12px; margin-bottom:6px; font-size:14px;
+}
+.record-list li.muted{ color:var(--ink-soft); background:#F7FAFA; }
+.muted{ color:var(--ink-soft); }
+
+/* ---------- settings ---------- */
+.settings-card{ background:var(--tile); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-bottom:14px; }
+.settings-card label{ display:block; font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:12px; }
+.settings-card input[type=text]{ display:block; width:100%; margin-top:5px; padding:9px 11px; border:1.5px solid var(--line); border-radius:10px; font-size:14px; }
+.checkline{ display:flex !important; align-items:center; gap:8px; }
+.checkline input{ width:auto; }
+.settings-card .btn-ghost{ margin-right:8px; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 760px){
+  .sidebar{ display:none; }
+  .bottomnav{
+    display:flex; position:fixed; left:0; right:0; bottom:0; z-index:40;
+    background:var(--tile); border-top:1px solid var(--line);
+    padding:6px 0 max(6px, env(safe-area-inset-bottom));
+  }
+  .bottomnav .navitem{ flex:1; width:auto; }
+  .topbar{ padding:16px 16px 12px; }
+  .app-title{ font-size:22px; }
+  #mainContent{ padding:16px 16px 90px; }
+  .speech-bubble{ max-width:100%; }
+  .mascot-row{ flex-wrap:wrap; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <nav class="sidebar" aria-label="주요 메뉴">
+    <div class="sidebar-logo">🧀</div>
+    <button class="navitem" data-tab="today"><span class="navicon">☀️</span>오늘</button>
+    <button class="navitem" data-tab="manage"><span class="navicon">🔁</span>관리</button>
+    <button class="navitem" data-tab="records"><span class="navicon">📅</span>기록</button>
+    <button class="navitem" data-tab="settings"><span class="navicon">⚙️</span>설정</button>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <div class="topbar-row">
+        <h1 class="app-title">오늘만 해보자</h1>
+        <span class="date-label" id="dateLabel"></span>
+      </div>
+      <div class="mascot-row">
+        <div class="cat-tub stage-0" id="catMascot"></div>
+        <div>
+          <div class="speech-bubble" id="speechBubble"></div>
+          <div class="stage-label" id="stageLabel"></div>
+        </div>
+      </div>
+    </header>
+
+    <main id="mainContent"></main>
+  </div>
+
+  <nav class="bottomnav" aria-label="주요 메뉴">
+    <button class="navitem" data-tab="today"><span class="navicon">☀️</span>오늘</button>
+    <button class="navitem" data-tab="manage"><span class="navicon">🔁</span>관리</button>
+    <button class="navitem" data-tab="records"><span class="navicon">📅</span>기록</button>
+    <button class="navitem" data-tab="settings"><span class="navicon">⚙️</span>설정</button>
+  </nav>
+
+  <div id="modalRoot"></div>
+</div>
+
+<script>
+/* ===================== 오늘만 해보자 — app logic ===================== */
+
+const WEEKDAY = ['일','월','화','수','목','금','토'];
+const STORAGE_KEY = 'cheese-todo-state-v1';
+
+const state = {
+  todos: [],       // {id, text, done, parentId, order, createdAt, doneAt, sourceManageId}
+  manage: [],       // {id, title, category, repeatType, repeatN, reminder, status, lastDone, nextDue, createdAt}
+  completions: [],  // {id, refType:'todo'|'manage', refId, title, category, date}
+  settings: { nickname: '', notifications: true, sound: true, dismissedReminders: [] }
+};
+
+const ui = {
+  tab: 'today',
+  manageView: 'list',
+  manageShowArchive: false,
+  manageCategoryFilter: null,
+  recordsTab: 'todo',
+  recordsMonth: todayStr().slice(0,7),
+  recordsSelectedDate: todayStr(),
+  manageRecordMiniCal: null, // {manageId, monthStart}
+  openMenuId: null,
+  addingSubtodoFor: null,
+  editingManageId: null,
+  showManageModal: false,
+  toast: null, // {text, actionLabel, actionFn, timer}
+  reminder: null // manage item pending reminder
+};
+
+let audioCtx = null;
+
+/* ----------------------- date helpers ----------------------- */
+function todayStr(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function parseD(s){
+  const [y,m,d] = s.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function toISO(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function addDays(s, n){
+  const d = parseD(s);
+  d.setDate(d.getDate()+n);
+  return toISO(d);
+}
+function addMonths(s, n){
+  const d = parseD(s);
+  d.setMonth(d.getMonth()+n);
+  return toISO(d);
+}
+function diffDays(a, b){
+  return Math.round((parseD(a) - parseD(b)) / 86400000);
+}
+function fmtKorean(s){
+  const d = parseD(s);
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} (${WEEKDAY[d.getDay()]})`;
+}
+function fmtShort(s){
+  const d = parseD(s);
+  return `${d.getMonth()+1}월 ${d.getDate()}일`;
+}
+function uid(){
+  return Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+}
+
+/* ----------------------- persistence ----------------------- */
+async function loadState(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if(res && res.value){
+      const parsed = JSON.parse(res.value);
+      Object.assign(state, parsed);
+      if(!state.settings.dismissedReminders) state.settings.dismissedReminders = [];
+      return true;
+    }
+  }catch(e){
+    console.log('no saved state yet', e);
+  }
+  return false;
+}
+let saveTimer = null;
+function saveState(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+    }catch(e){
+      console.error('save failed', e);
+    }
+  }, 150);
+}
+
+function seedIfEmpty(){
+  if(state.todos.length || state.manage.length) return;
+  const t = todayStr();
+  const tomorrow = addDays(t, 1);
+  state.manage.push({
+    id: uid(), title:'변기 청소하기', category:'집안일',
+    repeatType:'weekly', repeatN:7, reminder:true, status:'active',
+    lastDone:null, nextDue: tomorrow, createdAt: t
+  });
+  state.manage.push({
+    id: uid(), title:'그림 연습하기', category:'루틴',
+    repeatType:'daily', repeatN:1, reminder:false, status:'active',
+    lastDone:null, nextDue: t, createdAt: t
+  });
+  const parentId = uid();
+  state.todos.push({ id: parentId, text:'장보기', done:false, parentId:null, order:0, createdAt:t, doneAt:null, sourceManageId:null });
+  state.todos.push({ id: uid(), text:'우유 사기', done:false, parentId:parentId, order:0, createdAt:t, doneAt:null, sourceManageId:null });
+  state.todos.push({ id: uid(), text:'책상 정리하기', done:false, parentId:null, order:1, createdAt:t, doneAt:null, sourceManageId:null });
+  saveState();
+}
+
+/* ----------------------- derived data ----------------------- */
+function surfacedManageItems(){
+  const t = todayStr();
+  return state.manage.filter(m => m.status==='active' && diffDays(m.nextDue, t) <= 1);
+}
+function ddayLabel(nextDue){
+  const t = todayStr();
+  const diff = diffDays(nextDue, t);
+  if(diff >= 1) return 'D-1';
+  if(diff === 0) return '오늘';
+  if(diff === -1) return '1일 지남';
+  return '기한 지남';
+}
+function ddayClass(nextDue){
+  const t = todayStr();
+  const diff = diffDays(nextDue, t);
+  if(diff <= -1) return 'is-overdue';
+  if(diff === 0) return 'is-today';
+  return 'is-soon';
+}
+function manageStatusText(m){
+  const t = todayStr();
+  const sinceDone = m.lastDone ? diffDays(t, m.lastDone) : null;
+  const untilNext = diffDays(m.nextDue, t);
+  const parts = [];
+  if(sinceDone !== null) parts.push(`완료 ${sinceDone}일 지남`);
+  parts.push(untilNext >= 0 ? `다음까지 ${untilNext}일 남음` : `기한 ${Math.abs(untilNext)}일 지남`);
+  return parts.join(' · ');
+}
+function todayTopTodos(){
+  return state.todos.filter(td => td.parentId === null).sort((a,b)=>a.order-b.order);
+}
+function subTodosOf(id){
+  return state.todos.filter(td => td.parentId === id);
+}
+function todayCompletionStats(){
+  const top = todayTopTodos();
+  const surfaced = surfacedManageItems();
+  const totalMain = top.length + surfaced.length;
+  const doneMain = top.filter(t=>t.done).length + surfaced.filter(m=> m.lastDone===todayStr()).length;
+  const pct = totalMain === 0 ? 0 : Math.round((doneMain/totalMain)*100);
+  return { totalMain, doneMain, pct };
+}
+function catStage(pct){
+  if(pct >= 100) return 4;
+  if(pct >= 70) return 3;
+  if(pct >= 50) return 2;
+  if(pct >= 30) return 1;
+  return 0;
+}
+const STAGE_LABEL = ['꼬질꼬질 치즈','물에 젖은 치즈','거품 묻은 치즈','샤워 끝낸 치즈','뽀득뽀득 치즈'];
+
+/* ----------------------- sound ----------------------- */
+function ensureAudio(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+  }
+  return audioCtx;
+}
+function beep(freq, dur, type='sine', gainVal=0.05, delay=0){
+  if(!state.settings.sound) return;
+  const ctx = ensureAudio();
+  if(!ctx) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.value = gainVal;
+  osc.connect(gain).connect(ctx.destination);
+  const startAt = ctx.currentTime + delay;
+  osc.start(startAt);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startAt + dur);
+  osc.stop(startAt + dur + 0.02);
+}
+function soundComplete(){ beep(660,0.12,'triangle',0.06); }
+function soundUncheck(){ beep(330,0.08,'sine',0.03); }
+function soundAllClear(){
+  [523,659,784,1047].forEach((f,i)=> beep(f, 0.16, 'triangle', 0.06, i*0.09));
+}
+
+/* ----------------------- mutations ----------------------- */
+function addTodo(text, parentId){
+  text = text.trim();
+  if(!text) return;
+  const siblings = state.todos.filter(t=>t.parentId===parentId);
+  const order = siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0;
+  state.todos.push({ id:uid(), text, done:false, parentId: parentId||null, order, createdAt: todayStr(), doneAt:null, sourceManageId:null });
+  saveState();
+}
+function removeTodo(id){
+  const toRemove = new Set([id]);
+  state.todos.filter(t=>t.parentId===id).forEach(c=>toRemove.add(c.id));
+  state.todos = state.todos.filter(t=>!toRemove.has(t.id));
+  saveState();
+}
+function toggleTodo(id){
+  const todo = state.todos.find(t=>t.id===id);
+  if(!todo) return;
+  todo.done = !todo.done;
+  todo.doneAt = todo.done ? todayStr() : null;
+  if(todo.done){
+    state.completions.push({ id: uid(), refType:'todo', refId: todo.id, title: todo.text, category: null, date: todayStr() });
+    soundComplete();
+    showToast(`완료했다냥!`, null, null);
+  }else{
+    state.completions = state.completions.filter(c => !(c.refType==='todo' && c.refId===todo.id && c.date===todayStr()));
+    soundUncheck();
+  }
+  saveState();
+  checkAllClear();
+}
+function reorderTodo(dragId, dropId){
+  const list = todayTopTodos();
+  const dragIdx = list.findIndex(t=>t.id===dragId);
+  const dropIdx = list.findIndex(t=>t.id===dropId);
+  if(dragIdx<0 || dropIdx<0) return;
+  const [item] = list.splice(dragIdx,1);
+  list.splice(dropIdx,0,item);
+  list.forEach((t,i)=> t.order = i);
+  saveState();
+}
+
+function nextDueFrom(m, fromDate){
+  if(m.repeatType==='daily') return addDays(fromDate, 1);
+  if(m.repeatType==='weekly') return addDays(fromDate, 7);
+  if(m.repeatType==='monthly') return addMonths(fromDate, 1);
+  return addDays(fromDate, m.repeatN || 1);
+}
+function completeManage(id){
+  const m = state.manage.find(x=>x.id===id);
+  if(!m) return;
+  const t = todayStr();
+  const prevDue = m.nextDue;
+  m.lastDone = t;
+  m.nextDue = nextDueFrom(m, t);
+  state.completions.push({ id: uid(), refType:'manage', refId:m.id, title:m.title, category:m.category, date:t });
+  soundComplete();
+  showToast(`완료했다냥! 다음 일정은 ${fmtShort(m.nextDue)}이다냥`, '실행 취소', ()=> undoManage(id, prevDue));
+  saveState();
+  checkAllClear();
+}
+function undoManage(id, prevDue){
+  const m = state.manage.find(x=>x.id===id);
+  if(!m) return;
+  state.completions = state.completions.filter(c=>!(c.refType==='manage'&&c.refId===id&&c.date===todayStr()));
+  m.lastDone = state.completions.filter(c=>c.refType==='manage'&&c.refId===id).sort((a,b)=>a.date<b.date?1:-1)[0]?.date || null;
+  m.nextDue = prevDue;
+  soundUncheck();
+  saveState();
+}
+function skipManage(id){
+  const m = state.manage.find(x=>x.id===id);
+  if(!m) return;
+  m.nextDue = nextDueFrom(m, m.nextDue);
+  saveState();
+}
+function postponeManage(id, newDate){
+  const m = state.manage.find(x=>x.id===id);
+  if(!m || !newDate) return;
+  m.nextDue = newDate;
+  saveState();
+}
+function saveManageForm(data, editId){
+  if(editId){
+    const m = state.manage.find(x=>x.id===editId);
+    if(!m) return;
+    Object.assign(m, data);
+  }else{
+    state.manage.push({
+      id: uid(), status:'active', lastDone:null,
+      nextDue: data.startDate || todayStr(),
+      createdAt: todayStr(), ...data
+    });
+  }
+  saveState();
+}
+function setManageStatus(id, status){
+  const m = state.manage.find(x=>x.id===id);
+  if(!m) return;
+  m.status = status;
+  saveState();
+}
+function deleteManageForever(id){
+  state.manage = state.manage.filter(m=>m.id!==id);
+  saveState();
+}
+
+function checkAllClear(){
+  const { totalMain, doneMain } = todayCompletionStats();
+  if(totalMain>0 && doneMain===totalMain){
+    soundAllClear();
+  }
+}
+
+function showToast(text, actionLabel, actionFn){
+  ui.toast = { text, actionLabel, actionFn };
+  render();
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>{ ui.toast = null; render(); }, 4200);
+}
+
+/* ----------------------- reminder ----------------------- */
+function pendingReminder(){
+  const t = todayStr();
+  const candidates = state.manage.filter(m =>
+    m.status==='active' && m.reminder &&
+    diffDays(m.nextDue, t) === 1 &&
+    !state.settings.dismissedReminders.includes(m.id + '_' + t)
+  );
+  return candidates[0] || null;
+}
+function dismissReminder(id){
+  state.settings.dismissedReminders.push(id + '_' + todayStr());
+  saveState();
+}
+
+/* exports for check */
+if(typeof module !== 'undefined'){ module.exports = { addDays, addMonths, diffDays, nextDueFrom }; }
+/* ===================== 오늘만 해보자 — render ===================== */
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function render(){
+  document.getElementById('dateLabel').textContent = fmtKorean(todayStr());
+  renderCat();
+  renderBubbleOrToast();
+  document.querySelectorAll('.navitem').forEach(el=>{
+    el.classList.toggle('active', el.dataset.tab === ui.tab);
+  });
+
+  const main = document.getElementById('mainContent');
+  if(ui.tab==='today') main.innerHTML = renderToday();
+  else if(ui.tab==='manage') main.innerHTML = renderManage();
+  else if(ui.tab==='records') main.innerHTML = renderRecords();
+  else if(ui.tab==='settings') main.innerHTML = renderSettings();
+
+  if(ui.showManageModal) document.getElementById('modalRoot').innerHTML = renderManageModal();
+  else document.getElementById('modalRoot').innerHTML = '';
+
+  wireDrag();
+}
+
+/* ---------- cat / bubble ---------- */
+function renderCat(){
+  const { pct } = todayCompletionStats();
+  const stage = catStage(pct);
+  const cat = document.getElementById('catMascot');
+  cat.className = `cat-tub stage-${stage}`;
+  cat.innerHTML = `
+    <div class="tub-water" style="--fill:${Math.min(pct,100)}%"></div>
+    <div class="steam s1"></div><div class="steam s2"></div><div class="steam s3"></div>
+    <svg viewBox="0 0 100 100" class="cat-face" aria-hidden="true">
+      <ellipse cx="50" cy="58" rx="34" ry="28" class="cat-head"/>
+      <polygon points="22,38 32,14 40,40" class="cat-ear"/>
+      <polygon points="78,38 68,14 60,40" class="cat-ear"/>
+      <circle cx="38" cy="56" r="4.5" class="cat-eye"/>
+      <circle cx="62" cy="56" r="4.5" class="cat-eye"/>
+      <path d="M46 68 Q50 73 54 68" class="cat-mouth"/>
+      <line x1="14" y1="60" x2="30" y2="58" class="whisker"/>
+      <line x1="14" y1="68" x2="30" y2="66" class="whisker"/>
+      <line x1="86" y1="60" x2="70" y2="58" class="whisker"/>
+      <line x1="86" y1="68" x2="70" y2="66" class="whisker"/>
+      <circle cx="20" cy="30" r="3" class="sparkle sp1"/>
+      <circle cx="80" cy="26" r="2.4" class="sparkle sp2"/>
+      <circle cx="50" cy="12" r="2" class="sparkle sp3"/>
+    </svg>
+    <div class="bubble b1"></div><div class="bubble b2"></div><div class="bubble b3"></div>
+  `;
+  document.getElementById('stageLabel').textContent = `${STAGE_LABEL[stage]} · ${pct}%`;
+}
+
+function renderBubbleOrToast(){
+  const box = document.getElementById('speechBubble');
+  const rem = pendingReminder();
+  if(rem){
+    box.innerHTML = `
+      <span class="bubble-text">🔔 내일은 '${esc(rem.title)}' 하는 날이다냥!</span>
+      <button class="bubble-btn" data-action="reminder-view" data-id="${rem.id}">할 일 보기</button>
+      <button class="bubble-btn ghost" data-action="reminder-later" data-id="${rem.id}">나중에</button>
+    `;
+    return;
+  }
+  if(ui.toast){
+    box.innerHTML = `
+      <span class="bubble-text">🧀 ${esc(ui.toast.text)}</span>
+      ${ui.toast.actionLabel ? `<button class="bubble-btn" data-action="toast-undo">${esc(ui.toast.actionLabel)}</button>` : ''}
+    `;
+    return;
+  }
+  const { totalMain, doneMain } = todayCompletionStats();
+  let msg;
+  if(totalMain===0) msg = '오늘은 아직 아무것도 없다냥';
+  else if(doneMain===totalMain) msg = '오늘 할 건 다 했다냥';
+  else if(doneMain===0) msg = '어제는 잊어라냥. 오늘 다시 시작!';
+  else msg = '하나 해냈다냥';
+  box.innerHTML = `<span class="bubble-text">🐱 ${esc(msg)}</span>`;
+}
+
+/* ---------- today tab ---------- */
+function renderToday(){
+  const top = todayTopTodos();
+  const surfaced = surfacedManageItems();
+  const active = top.filter(t=>!t.done);
+  const done = top.filter(t=>t.done);
+  const { totalMain } = todayCompletionStats();
+
+  if(totalMain===0 && !top.length){
+    return `
+      <div class="quickadd">
+        <input id="quickAddInput" type="text" placeholder="오늘 할 일을 적어줘 (Enter로 추가)" list="recentTodos" />
+        <datalist id="recentTodos">${recentTodoOptions()}</datalist>
+      </div>
+      <div class="empty-state">
+        <p>🧀 오늘은 아직 아무것도 없다냥</p>
+        <button class="btn-primary" data-action="focus-quickadd">할 일 추가</button>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="quickadd">
+      <input id="quickAddInput" type="text" placeholder="오늘 할 일을 적어줘 (Enter로 추가, Shift+Enter로 하위 할일)" list="recentTodos" />
+      <datalist id="recentTodos">${recentTodoOptions()}</datalist>
+    </div>
+    ${surfaced.length ? `<div class="section-label">관리 항목</div><ul class="todo-list surfaced">${surfaced.map(renderSurfacedRow).join('')}</ul>` : ''}
+    <div class="section-label">오늘 만든 할 일</div>
+    <ul class="todo-list" id="todayDragList">
+      ${active.map(renderTodoRow).join('') || '<li class="empty-row">모두 완료했다냥!</li>'}
+    </ul>
+    ${done.length ? `
+      <button class="collapse-toggle" data-action="toggle-completed-section">완료 ${done.length}개 ${ui.hideCompleted?'▸':'▾'}</button>
+      ${ui.hideCompleted ? '' : `<ul class="todo-list done-list">${done.map(renderTodoRow).join('')}</ul>`}
+    ` : ''}
+  `;
+}
+function recentTodoOptions(){
+  const seen = new Set();
+  const recent = [...state.todos].reverse().filter(t=>{
+    if(seen.has(t.text)) return false;
+    seen.add(t.text); return true;
+  }).slice(0,6);
+  return recent.map(t=>`<option value="${esc(t.text)}"></option>`).join('');
+}
+function renderSurfacedRow(m){
+  const doneToday = m.lastDone === todayStr();
+  return `
+    <li class="todo-row manage-row" data-manage-id="${m.id}">
+      <label class="check">
+        <input type="checkbox" ${doneToday?'checked':''} data-action="complete-surfaced" data-id="${m.id}" ${doneToday?'disabled':''}/>
+        <span class="checkmark"></span>
+      </label>
+      <span class="todo-text ${doneToday?'is-done':''}">${esc(m.title)}</span>
+      <span class="dday ${ddayClass(m.nextDue)}">${ddayLabel(m.nextDue)}</span>
+    </li>
+  `;
+}
+function renderTodoRow(t){
+  const subs = subTodosOf(t.id);
+  return `
+    <li class="todo-row ${t.done?'is-done-row':''}" draggable="${t.parentId===null}" data-id="${t.id}">
+      <label class="check">
+        <input type="checkbox" ${t.done?'checked':''} data-action="toggle-todo" data-id="${t.id}"/>
+        <span class="checkmark"></span>
+      </label>
+      <span class="todo-text ${t.done?'is-done':''}">${esc(t.text)}</span>
+      <button class="row-icon-btn" data-action="add-subtodo-toggle" data-id="${t.id}" title="하위 할일 추가">＋</button>
+      <button class="row-icon-btn" data-action="delete-todo" data-id="${t.id}" title="삭제">✕</button>
+    </li>
+    ${ui.addingSubtodoFor===t.id ? `
+      <li class="todo-row sub-input-row">
+        <input type="text" class="sub-input" id="subInput_${t.id}" placeholder="하위 할 일 (Enter로 추가)" />
+      </li>` : ''}
+    ${subs.map(s=>`
+      <li class="todo-row sub-row ${s.done?'is-done-row':''}" data-id="${s.id}">
+        <label class="check">
+          <input type="checkbox" ${s.done?'checked':''} data-action="toggle-todo" data-id="${s.id}"/>
+          <span class="checkmark"></span>
+        </label>
+        <span class="todo-text ${s.done?'is-done':''}">${esc(s.text)}</span>
+        <button class="row-icon-btn" data-action="delete-todo" data-id="${s.id}" title="삭제">✕</button>
+      </li>
+    `).join('')}
+  `;
+}
+
+/* ---------- manage tab ---------- */
+function renderManage(){
+  const items = state.manage.filter(m => ui.manageShowArchive ? (m.status==='archived'||m.status==='paused') : m.status==='active');
+  const categories = [...new Set(items.map(m=>m.category||'미분류'))];
+
+  return `
+    <div class="toolbar">
+      <button class="btn-primary" data-action="open-manage-modal">+ 새 반복 할 일</button>
+      <div class="toolbar-right">
+        <button class="chip ${ui.manageView==='list'?'chip-active':''}" data-action="set-manage-view" data-view="list">목록</button>
+        <button class="chip ${ui.manageView==='board'?'chip-active':''}" data-action="set-manage-view" data-view="board">보드</button>
+        <button class="chip ${ui.manageShowArchive?'chip-active':''}" data-action="toggle-archive-view">${ui.manageShowArchive?'← 활성 목록':'보관함'}</button>
+      </div>
+    </div>
+    ${items.length===0 ? `<div class="empty-state"><p>${ui.manageShowArchive? '보관함이 비어있다냥' : '아직 반복 할 일이 없다냥'}</p></div>` :
+      ui.manageView==='list' ? renderManageList(items, categories) : renderManageBoard(items, categories)}
+  `;
+}
+function renderManageList(items, categories){
+  return categories.map(cat => `
+    <div class="cat-group">
+      <div class="cat-group-title">${esc(cat)}</div>
+      <ul class="manage-list">
+        ${items.filter(m=>(m.category||'미분류')===cat).map(renderManageRow).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+function renderManageRow(m){
+  if(ui.manageShowArchive){
+    return `
+      <li class="manage-row-item">
+        <div class="manage-row-main">
+          <div class="manage-title">${esc(m.title)} <span class="tag">${m.status==='paused'?'일시중지':'보관됨'}</span></div>
+        </div>
+        <div class="manage-row-actions">
+          <button class="btn-ghost" data-action="manage-restore" data-id="${m.id}">복구</button>
+          <button class="btn-ghost danger" data-action="manage-delete-forever" data-id="${m.id}">완전 삭제</button>
+        </div>
+      </li>
+    `;
+  }
+  return `
+    <li class="manage-row-item" data-id="${m.id}">
+      <div class="manage-row-main" data-action="open-manage-menu" data-id="${m.id}">
+        <div class="manage-title">${esc(m.title)}</div>
+        <div class="manage-sub ${ddayClass(m.nextDue)}">${manageStatusText(m)}</div>
+      </div>
+      <button class="btn-ghost complete-btn" data-action="manage-complete" data-id="${m.id}">완료했어요</button>
+      ${ui.openMenuId===m.id ? renderManageMenu(m) : ''}
+    </li>
+  `;
+}
+function renderManageMenu(m){
+  return `
+    <div class="popup-menu" data-id="${m.id}">
+      <button data-action="manage-complete" data-id="${m.id}">✔ 완료</button>
+      <button data-action="manage-skip" data-id="${m.id}">⏭ 이번 회차 건너뛰기</button>
+      <div class="popup-postpone">
+        <span>📅 날짜 미루기</span>
+        <input type="date" data-action-input="postpone" data-id="${m.id}" value="${m.nextDue}"/>
+      </div>
+      <button data-action="manage-edit-open" data-id="${m.id}">✎ 관리 항목 열기</button>
+      <button data-action="manage-pause" data-id="${m.id}">⏸ 일시 중지</button>
+      <button data-action="manage-archive" data-id="${m.id}" class="danger">🗄 보관하기</button>
+    </div>
+  `;
+}
+function renderManageBoard(items, categories){
+  return `<div class="board">${categories.map(cat=>`
+    <div class="board-col">
+      <div class="board-col-title">${esc(cat)}</div>
+      ${items.filter(m=>(m.category||'미분류')===cat).map(m=>`
+        <div class="board-card" data-action="open-manage-menu" data-id="${m.id}">
+          <div class="manage-title">${esc(m.title)}</div>
+          <div class="manage-sub ${ddayClass(m.nextDue)}">${ddayLabel(m.nextDue)}</div>
+          ${ui.openMenuId===m.id ? renderManageMenu(m) : ''}
+        </div>
+      `).join('')}
+    </div>
+  `).join('')}</div>`;
+}
+function renderManageModal(){
+  const editing = ui.editingManageId ? state.manage.find(m=>m.id===ui.editingManageId) : null;
+  return `
+    <div class="modal-backdrop" data-action="close-modal">
+      <div class="modal" data-stop>
+        <h3>${editing ? '관리 항목 수정' : '새 반복 할 일'}</h3>
+        <label>제목<input id="mTitle" type="text" value="${editing?esc(editing.title):''}" placeholder="예: 화분에 물주기"/></label>
+        <label>카테고리<input id="mCategory" type="text" value="${editing?esc(editing.category||''):''}" placeholder="예: 집안일"/></label>
+        <label>반복 주기
+          <select id="mRepeatType">
+            <option value="daily" ${editing?.repeatType==='daily'?'selected':''}>매일</option>
+            <option value="weekly" ${editing?.repeatType==='weekly'?'selected':''}>매주</option>
+            <option value="monthly" ${editing?.repeatType==='monthly'?'selected':''}>매달</option>
+            <option value="custom" ${editing?.repeatType==='custom'?'selected':''}>사용자 지정 (N일마다)</option>
+          </select>
+        </label>
+        <label id="customWrap" style="${editing?.repeatType==='custom'?'':'display:none'}">며칠마다
+          <input id="mRepeatN" type="number" min="1" value="${editing?.repeatN||3}"/>
+        </label>
+        <label>시작일 / 다음 예정일
+          <input id="mStartDate" type="date" value="${editing?editing.nextDue:todayStr()}"/>
+        </label>
+        <label class="checkline"><input id="mReminder" type="checkbox" ${editing?.reminder?'checked':''}/> 하루 전 리마인드 받기</label>
+        <div class="modal-actions">
+          <button class="btn-ghost" data-action="close-modal">취소</button>
+          <button class="btn-primary" data-action="save-manage-modal" data-id="${editing?editing.id:''}">저장</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ---------- records tab ---------- */
+function renderRecords(){
+  return `
+    <div class="toolbar">
+      <div class="toolbar-right">
+        <button class="chip ${ui.recordsTab==='todo'?'chip-active':''}" data-action="set-records-tab" data-t="todo">할일 기록</button>
+        <button class="chip ${ui.recordsTab==='manage'?'chip-active':''}" data-action="set-records-tab" data-t="manage">관리 기록</button>
+      </div>
+    </div>
+    ${ui.recordsTab==='todo' ? renderTodoRecords() : renderManageRecords()}
+  `;
+}
+function monthMatrix(monthStr){
+  const [y,m] = monthStr.split('-').map(Number);
+  const first = new Date(y, m-1, 1);
+  const startPad = first.getDay();
+  const daysInMonth = new Date(y, m, 0).getDate();
+  const cells = [];
+  for(let i=0;i<startPad;i++) cells.push(null);
+  for(let d=1; d<=daysInMonth; d++) cells.push(`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
+  return cells;
+}
+function renderTodoRecords(){
+  const cells = monthMatrix(ui.recordsMonth);
+  const countByDate = {};
+  state.completions.filter(c=>c.refType==='todo').forEach(c=>{ countByDate[c.date] = (countByDate[c.date]||0)+1; });
+  const sel = ui.recordsSelectedDate;
+  const dayCompletions = state.completions.filter(c=>c.refType==='todo' && c.date===sel);
+  const incompleteThatDay = state.todos.filter(t=> t.createdAt===sel && !t.done);
+
+  return `
+    <div class="cal-card">
+      <div class="cal-nav">
+        <button data-action="records-month-prev">‹</button>
+        <span>${ui.recordsMonth}</span>
+        <button data-action="records-month-next">›</button>
+      </div>
+      <div class="cal-grid">
+        ${WEEKDAY.map(w=>`<div class="cal-dow">${w}</div>`).join('')}
+        ${cells.map(c=>{
+          if(!c) return '<div class="cal-cell empty"></div>';
+          const n = countByDate[c]||0;
+          const isSel = c===sel;
+          const isToday = c===todayStr();
+          return `<button class="cal-cell ${isSel?'sel':''} ${isToday?'today':''}" data-action="select-date" data-date="${c}">
+            <span class="cal-daynum">${Number(c.slice(-2))}</span>
+            ${n? `<span class="cal-badge">${n}</span>`:''}
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="day-detail">
+      <div class="section-label">${fmtShort(sel)} 기록</div>
+      <ul class="record-list">
+        ${dayCompletions.map(c=>`<li>✔ ${esc(c.title)}</li>`).join('')}
+        ${incompleteThatDay.map(t=>`<li class="muted">${esc(t.text)}</li>`).join('')}
+        ${(dayCompletions.length+incompleteThatDay.length)===0 ? '<li class="muted">기록이 없다냥</li>' : ''}
+      </ul>
+    </div>
+    ${renderRecentList()}
+  `;
+}
+function renderManageRecords(){
+  const categories = [...new Set(state.manage.map(m=>m.category||'미분류'))];
+  return `
+    ${categories.map(cat=>`
+      <div class="cat-group">
+        <div class="cat-group-title">${esc(cat)}</div>
+        <ul class="manage-list">
+          ${state.manage.filter(m=>(m.category||'미분류')===cat).map(m=>`
+            <li class="manage-row-item" data-action="open-manage-record" data-id="${m.id}">
+              <div class="manage-row-main">
+                <div class="manage-title">${esc(m.title)}</div>
+                <div class="manage-sub">완료 ${state.completions.filter(c=>c.refType==='manage'&&c.refId===m.id).length}회</div>
+              </div>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `).join('')}
+    ${ui.manageRecordMiniCal ? renderMiniCalPopup() : ''}
+    ${renderRecentList()}
+  `;
+}
+function renderMiniCalPopup(){
+  const { manageId, monthStart } = ui.manageRecordMiniCal;
+  const m = state.manage.find(x=>x.id===manageId);
+  if(!m) return '';
+  const doneDates = new Set(state.completions.filter(c=>c.refType==='manage'&&c.refId===manageId).map(c=>c.date));
+  const months = [0,1,2].map(i => addMonths(monthStart, i).slice(0,7));
+  return `
+    <div class="modal-backdrop" data-action="close-minical">
+      <div class="modal minical-modal" data-stop>
+        <div class="minical-head">
+          <button data-action="minical-prev">‹</button>
+          <h3>${esc(m.title)}</h3>
+          <button data-action="minical-next">›</button>
+        </div>
+        <div class="minical-months">
+          ${months.map(mon=>`
+            <div class="cal-card small">
+              <div class="cal-nav"><span>${mon}</span></div>
+              <div class="cal-grid">
+                ${WEEKDAY.map(w=>`<div class="cal-dow">${w}</div>`).join('')}
+                ${monthMatrix(mon).map(c=> c ? `<div class="cal-cell mini ${doneDates.has(c)?'done':''}"><span class="cal-daynum">${Number(c.slice(-2))}</span></div>` : '<div class="cal-cell empty"></div>').join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="modal-actions"><button class="btn-ghost" data-action="close-minical">닫기</button></div>
+      </div>
+    </div>
+  `;
+}
+function renderRecentList(){
+  const recent = [...state.completions].sort((a,b)=> a.date < b.date ? 1 : (a.date>b.date?-1:0)).slice(0,20);
+  return `
+    <div class="section-label">최근 완료</div>
+    <ul class="record-list">
+      ${recent.map(c=>`<li>${c.refType==='manage'?'🔁':'✔'} ${esc(c.title)} <span class="muted">· ${fmtShort(c.date)}</span></li>`).join('') || '<li class="muted">아직 완료 기록이 없다냥</li>'}
+    </ul>
+  `;
+}
+
+/* ---------- settings tab ---------- */
+function renderSettings(){
+  const s = state.settings;
+  return `
+    <div class="settings-card">
+      <label>닉네임<input id="setNickname" type="text" value="${esc(s.nickname||'')}" placeholder="치즈집사"/></label>
+      <label class="checkline"><input id="setNotif" type="checkbox" ${s.notifications?'checked':''}/> 리마인드 알림 받기</label>
+      <label class="checkline"><input id="setSound" type="checkbox" ${s.sound?'checked':''}/> 완료 효과음 켜기</label>
+      <button class="btn-primary" data-action="settings-save">저장</button>
+    </div>
+    <div class="settings-card">
+      <button class="btn-ghost" data-action="settings-logout">로그아웃</button>
+      <button class="btn-ghost danger" data-action="settings-reset">모든 데이터 초기화</button>
+    </div>
+  `;
+}
+/* ===================== 오늘만 해보자 — events ===================== */
+
+function wireGlobalEvents(){
+  document.getElementById('app').addEventListener('click', onAppClick);
+  document.getElementById('app').addEventListener('change', onAppChange);
+  document.getElementById('app').addEventListener('keydown', onAppKeydown);
+  document.addEventListener('click', (e)=>{
+    if(ui.openMenuId && !e.target.closest('.popup-menu') && !e.target.closest('[data-action="open-manage-menu"]')){
+      ui.openMenuId = null; render();
+    }
+  });
+}
+
+function onAppKeydown(e){
+  if(e.target.id === 'quickAddInput' && e.key==='Enter'){
+    e.preventDefault();
+    addTodo(e.target.value, null);
+    e.target.value = '';
+    render();
+    const input = document.getElementById('quickAddInput');
+    if(input) input.focus();
+    return;
+  }
+  if(e.target.classList && e.target.classList.contains('sub-input') && e.key==='Enter'){
+    e.preventDefault();
+    const parentId = e.target.id.replace('subInput_','');
+    addTodo(e.target.value, parentId);
+    ui.addingSubtodoFor = null;
+    render();
+  }
+}
+
+function onAppChange(e){
+  const t = e.target;
+  if(t.dataset && t.dataset.actionInput === 'postpone'){
+    postponeManage(t.dataset.id, t.value);
+    ui.openMenuId = null;
+    render();
+  }
+  if(t.id === 'mRepeatType'){
+    const wrap = document.getElementById('customWrap');
+    if(wrap) wrap.style.display = t.value==='custom' ? '' : 'none';
+  }
+}
+
+function onAppClick(e){
+  const modalStop = e.target.closest('[data-stop]');
+  const backdrop = e.target.closest('.modal-backdrop');
+  if(backdrop && !modalStop && e.target === backdrop){
+    ui.showManageModal = false;
+    ui.editingManageId = null;
+    ui.manageRecordMiniCal = null;
+    render();
+    return;
+  }
+
+  const navEl = e.target.closest('.navitem');
+  if(navEl){
+    ui.tab = navEl.dataset.tab;
+    ui.openMenuId = null;
+    render();
+    return;
+  }
+
+  const el = e.target.closest('[data-action]');
+  if(!el) return;
+  const action = el.dataset.action;
+  const id = el.dataset.id;
+
+  switch(action){
+    case 'focus-quickadd': {
+      const input = document.getElementById('quickAddInput');
+      if(input) input.focus();
+      break;
+    }
+    case 'toggle-todo':
+      toggleTodo(id); render(); break;
+    case 'complete-surfaced':
+      completeManage(id); render(); break;
+    case 'delete-todo':
+      removeTodo(id); render(); break;
+    case 'add-subtodo-toggle':
+      ui.addingSubtodoFor = ui.addingSubtodoFor===id ? null : id;
+      render();
+      setTimeout(()=>{ const i=document.getElementById('subInput_'+id); if(i) i.focus(); },0);
+      break;
+    case 'toggle-completed-section':
+      ui.hideCompleted = !ui.hideCompleted; render(); break;
+    case 'toast-undo':
+      if(ui.toast && ui.toast.actionFn) ui.toast.actionFn();
+      ui.toast = null; render(); break;
+    case 'reminder-view':
+      ui.tab = 'today';
+      dismissReminder(id);
+      render();
+      break;
+    case 'reminder-later':
+      dismissReminder(id); render(); break;
+
+    /* manage */
+    case 'open-manage-modal':
+      ui.showManageModal = true; ui.editingManageId = null; render(); break;
+    case 'close-modal':
+      ui.showManageModal = false; ui.editingManageId = null; render(); break;
+    case 'save-manage-modal': {
+      const title = document.getElementById('mTitle').value.trim();
+      if(!title){ break; }
+      const data = {
+        title,
+        category: document.getElementById('mCategory').value.trim() || '미분류',
+        repeatType: document.getElementById('mRepeatType').value,
+        repeatN: Number(document.getElementById('mRepeatN').value) || 1,
+        reminder: document.getElementById('mReminder').checked,
+        nextDue: document.getElementById('mStartDate').value || todayStr()
+      };
+      saveManageForm(data, id || null);
+      ui.showManageModal = false; ui.editingManageId = null;
+      render();
+      break;
+    }
+    case 'set-manage-view':
+      ui.manageView = el.dataset.view; render(); break;
+    case 'toggle-archive-view':
+      ui.manageShowArchive = !ui.manageShowArchive; render(); break;
+    case 'open-manage-menu':
+      ui.openMenuId = ui.openMenuId===id ? null : id; render(); break;
+    case 'manage-complete':
+      completeManage(id); ui.openMenuId=null; render(); break;
+    case 'manage-skip':
+      skipManage(id); ui.openMenuId=null; render(); break;
+    case 'manage-edit-open':
+      ui.editingManageId = id; ui.showManageModal = true; ui.openMenuId=null; render(); break;
+    case 'manage-pause':
+      setManageStatus(id,'paused'); ui.openMenuId=null; render(); break;
+    case 'manage-archive':
+      setManageStatus(id,'archived'); ui.openMenuId=null; render(); break;
+    case 'manage-restore':
+      setManageStatus(id,'active'); render(); break;
+    case 'manage-delete-forever':
+      if(confirm('완전히 삭제할까? 되돌릴 수 없다냥.')) deleteManageForever(id);
+      render(); break;
+
+    /* records */
+    case 'set-records-tab':
+      ui.recordsTab = el.dataset.t; render(); break;
+    case 'records-month-prev':
+      ui.recordsMonth = addMonths(ui.recordsMonth+'-01', -1).slice(0,7); render(); break;
+    case 'records-month-next':
+      ui.recordsMonth = addMonths(ui.recordsMonth+'-01', 1).slice(0,7); render(); break;
+    case 'select-date':
+      ui.recordsSelectedDate = el.dataset.date; render(); break;
+    case 'open-manage-record':
+      ui.manageRecordMiniCal = { manageId: id, monthStart: todayStr().slice(0,7)+'-01' }; render(); break;
+    case 'close-minical':
+      ui.manageRecordMiniCal = null; render(); break;
+    case 'minical-prev':
+      ui.manageRecordMiniCal.monthStart = addMonths(ui.manageRecordMiniCal.monthStart, -3); render(); break;
+    case 'minical-next':
+      ui.manageRecordMiniCal.monthStart = addMonths(ui.manageRecordMiniCal.monthStart, 3); render(); break;
+
+    /* settings */
+    case 'settings-save': {
+      state.settings.nickname = document.getElementById('setNickname').value.trim();
+      state.settings.notifications = document.getElementById('setNotif').checked;
+      state.settings.sound = document.getElementById('setSound').checked;
+      saveState();
+      showToast('설정을 저장했다냥!', null, null);
+      break;
+    }
+    case 'settings-logout':
+      alert('이 앱은 데모 버전이라 실제 로그인은 없다냥. (로그아웃 UI만 확인용)');
+      break;
+    case 'settings-reset':
+      if(confirm('정말 모든 기록을 지울까? 되돌릴 수 없다냥.')){
+        state.todos = []; state.manage = []; state.completions = [];
+        state.settings.dismissedReminders = [];
+        saveState();
+        render();
+      }
+      break;
+  }
+}
+
+/* ---------- drag & drop for today's manual todos ---------- */
+function wireDrag(){
+  const list = document.getElementById('todayDragList');
+  if(!list) return;
+  let dragId = null;
+  list.querySelectorAll('.todo-row[draggable="true"]').forEach(row=>{
+    row.addEventListener('dragstart', ()=>{ dragId = row.dataset.id; row.classList.add('dragging'); });
+    row.addEventListener('dragend', ()=>{ row.classList.remove('dragging'); });
+    row.addEventListener('dragover', (e)=> e.preventDefault());
+    row.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      const dropId = row.dataset.id;
+      if(dragId && dropId && dragId!==dropId){
+        reorderTodo(dragId, dropId);
+        render();
+      }
+    });
+  });
+}
+
+/* ---------- init ---------- */
+async function initApp(){
+  await loadState();
+  seedIfEmpty();
+  wireGlobalEvents();
+  render();
+}
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
